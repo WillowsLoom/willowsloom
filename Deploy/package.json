@@ -1,0 +1,8 @@
+{
+  "name": "willows-loom",
+  "version": "1.0.0",
+  "description": "Willow's Loom Jewelry — Netlify project",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
