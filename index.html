@@ -1160,18 +1160,22 @@ var selectedVarOpts={};
 
 function buildMoonCard(moonItems){
   var letters='ABCDEFGH'.split('');
+  var sorted=moonItems.slice();
+  if(!sorted.length)return'';
   // Build descriptions from notes field or product name
   var descs=sorted.map(function(p){
     if(p.notes&&p.notes.trim())return p.notes.trim();
-    // Strip common words to get a useful short desc
     return p.name.replace(/moon pendant crochet necklace/gi,'').replace(/moon pendant/gi,'').replace(/crochet necklace/gi,'').replace(/necklace/gi,'').replace(/lobster/gi,'').trim()||p.name;
   });
-  var sorted=moonItems.slice();
-  if(!sorted.length)return'';
 
   // Store photos and products in JS variables (not data attributes)
   moonPhotoStore=sorted.map(function(p){return p.photos&&p.photos.length?p.photos[0]:''});
-  moonProdStore=sorted.map(function(p){return{id:p.id,name:p.name,price:p.price,qty:parseInt(p.qty)||0,photos:p.photos||[]}});
+  moonProdStore=sorted.map(function(p){
+    var q=p.variations&&p.variations.length
+      ?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0)
+      :parseInt(p.qty)||0;
+    return{id:p.id,name:p.name,price:p.price,qty:q,photos:p.photos||[],variations:p.variations||[]};
+  });
 
   var mainPhoto=moonPhotoStore[0]||null;
   var optBtns=sorted.map(function(p,i){
@@ -1184,7 +1188,12 @@ function buildMoonCard(moonItems){
       +'</button>';
   }).join('');
 
-  var totalQty=sorted.reduce(function(s,p){return s+(parseInt(p.qty)||0)},0);
+  var totalQty=sorted.reduce(function(s,p){
+    var q=p.variations&&p.variations.length
+      ?p.variations.reduce(function(sv,v){return sv+(parseInt(v.qty)||0)},0)
+      :parseInt(p.qty)||0;
+    return s+q;
+  },0);
   var moonReqData=JSON.stringify({id:'moon-collection',name:'Moon Pendant Crochet Necklace',sku:'NK-MOON',category:'Necklaces',price:15}).replace(/"/g,'&quot;');
   var addBtn=totalQty>0?'<button class="btn-add" onclick="showMoonNecklaceInfo()">\u2726 Add to Bag \u2726</button>':'<button class="btn-add" style="background:rgba(45,27,78,0.5);border-color:var(--plum);color:var(--lavender);" data-action="restock" data-p="'+moonReqData+'">\u2726 Request More \u2726</button>';
 
