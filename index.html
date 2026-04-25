@@ -1148,7 +1148,7 @@ function filterProducts(cat,btn){
 }
 
 // Moon necklace SKUs to consolidate
-var MOON_LOBSTER_SKUS=[];
+var MOON_LOBSTER_SKUS=['NK-RS-001','NK-RS-005','NK-RS-008'];
 
 // Global store for moon photos and products (avoids data attribute size limits)
 var moonPhotoStore=[];
@@ -1159,23 +1159,15 @@ var varProductStore={};
 var selectedVarOpts={};
 
 function buildMoonCard(moonItems){
-  var letters='ABCDEFGH'.split('');
-  var sorted=moonItems.slice();
+
+  var letters=['A','B','C'];
+  var descs=['Rustic Purplish · Pink & Blue yarn','Rose · Pink & Blue yarn','Rustic Purplish · Light Pink & Purple yarn'];
+  var sorted=MOON_LOBSTER_SKUS.map(function(sku){return moonItems.find(function(p){return p.sku===sku})}).filter(Boolean);
   if(!sorted.length)return'';
-  // Build descriptions from notes field or product name
-  var descs=sorted.map(function(p){
-    if(p.notes&&p.notes.trim())return p.notes.trim();
-    return p.name.replace(/moon pendant crochet necklace/gi,'').replace(/moon pendant/gi,'').replace(/crochet necklace/gi,'').replace(/necklace/gi,'').replace(/lobster/gi,'').trim()||p.name;
-  });
 
   // Store photos and products in JS variables (not data attributes)
   moonPhotoStore=sorted.map(function(p){return p.photos&&p.photos.length?p.photos[0]:''});
-  moonProdStore=sorted.map(function(p){
-    var q=p.variations&&p.variations.length
-      ?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0)
-      :parseInt(p.qty)||0;
-    return{id:p.id,name:p.name,price:p.price,qty:q,photos:p.photos||[],variations:p.variations||[]};
-  });
+  moonProdStore=sorted.map(function(p){return{id:p.id,name:p.name,price:p.price,qty:parseInt(p.qty)||0,photos:p.photos||[]}});
 
   var mainPhoto=moonPhotoStore[0]||null;
   var optBtns=sorted.map(function(p,i){
@@ -1188,12 +1180,7 @@ function buildMoonCard(moonItems){
       +'</button>';
   }).join('');
 
-  var totalQty=sorted.reduce(function(s,p){
-    var q=p.variations&&p.variations.length
-      ?p.variations.reduce(function(sv,v){return sv+(parseInt(v.qty)||0)},0)
-      :parseInt(p.qty)||0;
-    return s+q;
-  },0);
+  var totalQty=sorted.reduce(function(s,p){return s+(parseInt(p.qty)||0)},0);
   var moonReqData=JSON.stringify({id:'moon-collection',name:'Moon Pendant Crochet Necklace',sku:'NK-MOON',category:'Necklaces',price:15}).replace(/"/g,'&quot;');
   var addBtn=totalQty>0?'<button class="btn-add" onclick="showMoonNecklaceInfo()">\u2726 Add to Bag \u2726</button>':'<button class="btn-add" style="background:rgba(45,27,78,0.5);border-color:var(--plum);color:var(--lavender);" data-action="restock" data-p="'+moonReqData+'">\u2726 Request More \u2726</button>';
 
@@ -1328,15 +1315,8 @@ function addMoonToCart(){
 
 function renderProducts(){
   var grid=document.getElementById('productsGrid');
-  var HIDE_SKUS=['NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-007'];
-  // Dynamically group ALL NK- necklaces that have variations into moon card
-  var moonItems=products.filter(function(p){
-    if(!p.sku||!p.sku.startsWith('NK-'))return false;
-    var cat=(p.category||'').toLowerCase();
-    var isNeck=cat==='necklaces'||cat==='necklace';
-    var hasVars=p.variations&&p.variations.length>0;
-    return isNeck&&(hasVars||['NK-RS-001','NK-RS-005','NK-RS-008'].indexOf(p.sku)>=0);
-  });
+  var HIDE_SKUS=['NK-RS-001','NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-005','NK-RS-007','NK-RS-008'];
+  var moonItems=products.filter(function(p){return MOON_LOBSTER_SKUS.indexOf(p.sku)>=0;});
   MOON_LOBSTER_SKUS=moonItems.map(function(p){return p.sku;});
   HIDE_SKUS=['NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-007'];
   var others=products.filter(function(p){
