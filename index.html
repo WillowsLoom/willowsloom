@@ -1148,7 +1148,7 @@ function filterProducts(cat,btn){
 }
 
 // Moon necklace SKUs to consolidate
-var MOON_LOBSTER_SKUS=['NK-RS-001','NK-RS-005','NK-RS-008'];
+var MOON_LOBSTER_SKUS=[];
 
 // Global store for moon photos and products (avoids data attribute size limits)
 var moonPhotoStore=[];
@@ -1159,9 +1159,14 @@ var varProductStore={};
 var selectedVarOpts={};
 
 function buildMoonCard(moonItems){
-  var letters=['A','B','C'];
-  var descs=['Rustic Purplish \u00b7 Pink & Blue yarn','Rose \u00b7 Pink & Blue yarn','Rustic Purplish \u00b7 Light Pink & Purple yarn'];
-  var sorted=MOON_LOBSTER_SKUS.map(function(sku){return moonItems.find(function(p){return p.sku===sku})}).filter(Boolean);
+  var letters='ABCDEFGH'.split('');
+  // Build descriptions from notes field or product name
+  var descs=sorted.map(function(p){
+    if(p.notes&&p.notes.trim())return p.notes.trim();
+    // Strip common words to get a useful short desc
+    return p.name.replace(/moon pendant crochet necklace/gi,'').replace(/moon pendant/gi,'').replace(/crochet necklace/gi,'').replace(/necklace/gi,'').replace(/lobster/gi,'').trim()||p.name;
+  });
+  var sorted=moonItems.slice();
   if(!sorted.length)return'';
 
   // Store photos and products in JS variables (not data attributes)
@@ -1314,9 +1319,20 @@ function addMoonToCart(){
 
 function renderProducts(){
   var grid=document.getElementById('productsGrid');
-  var HIDE_SKUS=['NK-RS-001','NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-005','NK-RS-007','NK-RS-008'];
-  var moonItems=products.filter(function(p){return MOON_LOBSTER_SKUS.indexOf(p.sku)>=0});
-  var others=products.filter(function(p){return HIDE_SKUS.indexOf(p.sku)<0});
+  var HIDE_SKUS=['NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-007'];
+  // Dynamically group ALL NK- necklaces that have variations into moon card
+  var moonItems=products.filter(function(p){
+    if(!p.sku||!p.sku.startsWith('NK-'))return false;
+    var cat=(p.category||'').toLowerCase();
+    var isNeck=cat==='necklaces'||cat==='necklace';
+    var hasVars=p.variations&&p.variations.length>0;
+    return isNeck&&(hasVars||['NK-RS-001','NK-RS-005','NK-RS-008'].indexOf(p.sku)>=0);
+  });
+  MOON_LOBSTER_SKUS=moonItems.map(function(p){return p.sku;});
+  HIDE_SKUS=['NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-007'];
+  var others=products.filter(function(p){
+    return MOON_LOBSTER_SKUS.indexOf(p.sku)<0&&HIDE_SKUS.indexOf(p.sku)<0;
+  });
   var filtered=currentFilter==='All'?others:others.filter(function(p){return p.category===currentFilter});
   var showMoon=(currentFilter==='All'||currentFilter==='Necklaces')&&moonItems.length>0;
   var moonCard=showMoon?buildMoonCard(moonItems):'';
