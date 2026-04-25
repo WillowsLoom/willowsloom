@@ -1141,7 +1141,7 @@ function selectVarOpt(btn){
       var v=p.variations[vi];
       var photos=(v&&v.photos&&v.photos.length)?v.photos:(p.photos||[]);
       if(photos.length===1){
-        imgWrap.innerHTML='<div class="product-img"><img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);"></div>';
+        imgWrap.innerHTML='<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);">';
       } else if(photos.length>1){
         var cid='cv'+pid.replace(/[^a-zA-Z0-9]/g,'').slice(0,12)+vi;
         var slides='';var dots='';var n=photos.length;
@@ -1239,7 +1239,7 @@ function renderProducts(){
       addBtn='<button class="btn-add" onclick=\'addToCart('+pj+',null)\'>✦ Add to Bag ✦</button>';
     }
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
-    var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
+    var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;aspect-ratio:3/4;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
     return'<div class="product-card">'
       +(isLow?'<div class="badge">'+(qty===1?'1 left':qty+' left')+'</div>':'')
       +imgSection
