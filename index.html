@@ -1133,15 +1133,28 @@ function selectVarOpt(btn){
   }
   btn.classList.add('moon-opt-active');
   selectedVarOpts[pid]=vi;
-  // Swap product card image to match selected variation
+  // Swap product card image to match selected variation (with carousel if multiple photos)
   var imgWrap=document.getElementById('pimg-'+pid);
   if(imgWrap){
     var p=varProductStore[pid];
     if(p){
       var v=p.variations[vi];
       var photos=(v&&v.photos&&v.photos.length)?v.photos:(p.photos||[]);
-      if(photos.length){
-        imgWrap.innerHTML='<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;">';
+      if(photos.length===1){
+        imgWrap.innerHTML='<div class="product-img"><img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);"></div>';
+      } else if(photos.length>1){
+        var cid='cv'+pid.replace(/[^a-zA-Z0-9]/g,'').slice(0,12)+vi;
+        var slides='';var dots='';var n=photos.length;
+        for(var ci=0;ci<n;ci++){
+          slides+='<div style="width:'+(100/n).toFixed(4)+'%;height:100%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--midnight);"><img src="'+photos[ci]+'" style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;"></div>';
+          dots+='<span data-cid="'+cid+'" data-ci="'+ci+'" style="display:inline-block;width:7px;height:7px;border-radius:50%;cursor:pointer;margin:0 2px;background:'+(ci===0?'var(--gold)':'rgba(255,255,255,0.3)')+';transition:background 0.2s;"></span>';
+        }
+        imgWrap.innerHTML='<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:var(--midnight);">'
+          +'<div id="'+cid+'" data-ci="0" style="display:flex;width:'+(n*100)+'%;height:100%;transition:transform 0.32s ease;">'+slides+'</div>'
+          +'<button data-cid="'+cid+'" data-cd="-1" style="position:absolute;left:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;line-height:1;">&#8249;</button>'
+          +'<button data-cid="'+cid+'" data-cd="1" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;line-height:1;">&#8250;</button>'
+          +'<div id="'+cid+'d" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;z-index:4;">'+dots+'</div>'
+          +'</div>';
       }
     }
   }
@@ -1159,9 +1172,11 @@ function renderProducts(){
   var cards=filtered.map(function(p){
     var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     var isLow=qty>0&&qty<=5;
+    var hasVars=p.variations&&p.variations.length>0&&p.variations.some(function(v){return v.name&&v.name.trim()});
 
-    // Image / Carousel
-    var photos=p.photos||[];
+    // Image / Carousel — for variation products use first variation's photos
+    var firstVarPhotos=hasVars&&p.variations[0]&&p.variations[0].photos&&p.variations[0].photos.length?p.variations[0].photos:null;
+    var photos=firstVarPhotos||p.photos||[];
     var imgHtml='';
     if(photos.length===0){
       var em=p.category==='Necklaces'?'📿':p.category==='Rings'?'💍':p.category==='Bracelets'?'📿':p.category==='Earrings'?'✨':'💎';
@@ -1195,7 +1210,6 @@ function renderProducts(){
     var cat=(p.category||'').toLowerCase();
     var isBracelet=cat==='bracelets'||cat==='bracelet';
     var isNecklace=cat==='necklaces'||cat==='necklace';
-    var hasVars=p.variations&&p.variations.length>0&&p.variations.some(function(v){return v.name&&v.name.trim()});
     if(hasVars){
       // Store full product for later lookup
       varProductStore[p.id]=p;
