@@ -892,7 +892,7 @@ function addToCart(product,variation){
     notify('✦ Sorry — only '+maxQty+' available!');
     return;
   }
-  var item={id:itemId,name:product.name+(variation?' — '+variation.name:''),price:parseFloat(variation?variation.price:product.price)||0,photo:product.photos&&product.photos.length?product.photos[0]:null};
+  var item={id:itemId,name:product.name+(variation?' — '+variation.name:''),price:parseFloat(variation?variation.price:product.price)||0,photo:product.photos&&product.photos.length?product.photos[0]:null,sku:product.sku||''};
   if(existing){existing.qty=(existing.qty||1)+1}else{item.qty=1;cart.push(item)}
   renderCart();notify('✦ Added to bag!')
 }
@@ -1000,7 +1000,7 @@ async function initStripeForm(){
       body:JSON.stringify({
         amount:Math.round(grandTotal*100),
         currency:'usd',
-        cart:cart.map(function(c){return{name:c.name,price:c.price,qty:c.qty||1};})
+        cart:cart.map(function(c){return{name:c.name,price:c.price,qty:c.qty||1,sku:c.sku||'N/A'};})
       })
     });
     var data=await resp.json();
@@ -1064,8 +1064,6 @@ async function submitStripePayment(){
     btn.disabled=false;btn.textContent='✦ Try Again ✦';
   }else if(result.paymentIntent&&result.paymentIntent.status==='succeeded'){
     document.getElementById('stripeFormWrap').style.display='none';
-    // Deduct inventory in Supabase for each cart item
-    deductInventory(cart);
     // Tailor success message to delivery type
     if(deliveryMode==='pickup'){
       document.getElementById('successEmoji').textContent='🏡';
@@ -1087,72 +1085,6 @@ function loadStripeJs(){
     var s=document.createElement('script');s.src='https://js.stripe.com/v3/';s.onload=resolve;
     document.head.appendChild(s);
   });
-}
-
-// ── Inventory Deduction on Purchase ─────────────────────────
-function deductInventory(cartItems){
-  cartItems.forEach(function(item){
-    // Find the matching product in our loaded products array
-    var product=products.find(function(p){
-      return p.id===item.id||item.id.startsWith(p.id);
-    });
-    if(!product)return;
-
-    var newQty=Math.max(0,(parseInt(product.qty)||0)-(item.qty||1));
-
-    // Check if it's a variation item
-    var varMatch=item.id.match(/-v([0-9]+)$/);
-    if(varMatch&&product.variations&&product.variations.length){
-      var vi=parseInt(varMatch[1]);
-      var updatedVars=product.variations.map(function(v,i){
-        if(i===vi){
-          return Object.assign({},v,{qty:Math.max(0,(parseInt(v.qty)||0)-(item.qty||1))});
-        }
-        return v;
-      });
-      // Update local state
-      product.variations=updatedVars;
-      // Patch variations in Supabase
-      fetch(SUPA_URL+'/rest/v1/products?id=eq.'+product.id,{
-        method:'PATCH',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPA_KEY,
-          'Authorization':'Bearer '+SUPA_KEY,
-          'Prefer':'return=minimal'
-        },
-        body:JSON.stringify({
-          variations:JSON.stringify(updatedVars),
-          updated_at:new Date().toISOString()
-        })
-      }).then(function(r){
-        if(!r.ok)console.log('Inventory deduct error for variation:',item.name);
-        else console.log('Inventory deducted for:',item.name);
-      }).catch(function(e){console.log('Inventory deduct failed:',e);});
-    } else {
-      // Regular product — deduct qty
-      product.qty=newQty;
-      fetch(SUPA_URL+'/rest/v1/products?id=eq.'+product.id,{
-        method:'PATCH',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPA_KEY,
-          'Authorization':'Bearer '+SUPA_KEY,
-          'Prefer':'return=minimal'
-        },
-        body:JSON.stringify({
-          qty:newQty,
-          status:newQty===0?'Out of Stock':'In Stock',
-          updated_at:new Date().toISOString()
-        })
-      }).then(function(r){
-        if(!r.ok)console.log('Inventory deduct error:',item.name);
-        else console.log('Inventory deducted:',item.name,'new qty:',newQty);
-      }).catch(function(e){console.log('Inventory deduct failed:',e);});
-    }
-  });
-  // Re-render products after short delay so new qtys show
-  setTimeout(function(){loadProducts();},1500);
 }
 
 // ── Products — Supabase + photo fix ───────────────────────────
@@ -1774,7 +1706,7 @@ function addBraceletToCart(){
   var item={
     id:itemId,
     name:p.name+letter+' — Size '+selectedSize+' ('+sizeLabels[selectedSize]+')'+(note?' · '+note:''),
-    price:price,photo:photo,qty:1
+    price:price,photo:photo,qty:1,sku:p.sku||''
   };
   if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
   renderCart();closeSizing();
@@ -1831,7 +1763,7 @@ function addNecklaceToCart(){
     name:p.name+(note?' · '+note:''),
     price:parseFloat(p.price)||0,
     photo:p.photos&&p.photos.length?p.photos[0]:null,
-    qty:1
+    qty:1,sku:p.sku||''
   };
   if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
   renderCart();closeNecklace();
