@@ -108,7 +108,6 @@ section{position:relative;z-index:1;padding:80px 24px}
 .product-tag{font-size:10px;color:var(--teal);border:1px solid var(--teal)33;padding:2px 8px;border-radius:20px;letter-spacing:1px}
 .btn-add{width:100%;background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--white);border:none;padding:10px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
 .btn-add:hover{background:linear-gradient(135deg,var(--lavender),var(--violet))}
-.out-of-stock{opacity:0.5;pointer-events:none}
 .badge{position:absolute;top:12px;right:12px;background:var(--gold);color:var(--deep);font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 8px;border-radius:2px;text-transform:uppercase}
 .empty-shop{text-align:center;padding:60px 20px;color:var(--lavender);font-style:italic;font-size:18px}
 
@@ -302,20 +301,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 .nk-add-btn{width:100%;background:linear-gradient(135deg,var(--gold),#a07828);color:var(--deep);border:none;padding:13px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all 0.3s;margin-bottom:8px}
 .nk-add-btn:hover{box-shadow:0 4px 20px rgba(201,168,76,0.4);transform:translateY(-1px)}
 .nk-close-btn{width:100%;background:transparent;color:var(--lavender);border:1px solid var(--plum);padding:10px;font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:2px;cursor:pointer;border-radius:4px}
-
-/* Request More Modal */
-#reqModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center;padding:16px}
-#reqModal.show{display:flex}
-.req-box{background:var(--midnight);border:1px solid var(--plum);border-radius:16px;padding:28px 24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-.req-title{font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:4px;letter-spacing:2px}
-.req-sub{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--lavender);margin-bottom:20px;line-height:1.6}
-.req-item-info{background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--stardust);line-height:1.8}
-.req-item-info strong{color:var(--gold)}
-.req-input{width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:14px;border-radius:4px;outline:none;box-sizing:border-box;transition:border-color 0.3s;margin-bottom:12px}
-.req-input:focus{border-color:var(--lavender)}
-.req-send{width:100%;background:linear-gradient(135deg,var(--gold),#a07828);color:var(--deep);border:none;padding:13px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all 0.3s;margin-bottom:8px}
-.req-send:hover{box-shadow:0 4px 20px rgba(201,168,76,0.4);transform:translateY(-1px)}
-.req-close{width:100%;background:transparent;color:var(--lavender);border:1px solid var(--plum);padding:10px;font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:2px;cursor:pointer;border-radius:4px}
 
 /* Notification */
 .notif{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--violet),var(--plum));border:1px solid var(--lavender);color:var(--white);padding:12px 24px;border-radius:4px;font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:1px;z-index:500;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
@@ -701,19 +686,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     </div>
     <button class="nk-add-btn" id="nkAddBtn">✦ Add to Bag ✦</button>
     <button class="nk-close-btn" onclick="closeNecklace()">✕ Close</button>
-  </div>
-</div>
-
-<!-- Request More Modal -->
-<div id="reqModal">
-  <div class="req-box">
-    <div class="req-title">✦ Request Restock</div>
-    <p class="req-sub">This piece is currently sold out. Leave your email and we'll notify you when it's back!</p>
-    <div class="req-item-info" id="reqItemInfo"></div>
-    <input class="req-input" id="reqEmail" type="email" placeholder="Your email address"/>
-    <input class="req-input" id="reqNote" placeholder="Any notes? (optional)"/>
-    <button class="req-send" onclick="submitRestock()">✦ Send Request ✦</button>
-    <button class="req-close" onclick="closeReq()">✕ Close</button>
   </div>
 </div>
 
@@ -1178,11 +1150,15 @@ function selectVarOpt(btn){
 function renderProducts(){
   var grid=document.getElementById('productsGrid');
   var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
+  filtered=filtered.filter(function(p){
+    var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
+    return qty>0;
+  });
   var moonCard='';
   if(!filtered.length){grid.innerHTML='<div class="empty-shop" style="grid-column:1/-1"><p>\uD83C\uDF19 The collection is being woven...<br/><em>Check back soon</em></p></div>';return;}
   var cards=filtered.map(function(p){
     var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
-    var isLow=qty>0&&qty<=5;var isOut=qty===0;
+    var isLow=qty>0&&qty<=5;
 
     // Image / Carousel
     var photos=p.photos||[];
@@ -1220,11 +1196,7 @@ function renderProducts(){
     var isBracelet=cat==='bracelets'||cat==='bracelet';
     var isNecklace=cat==='necklaces'||cat==='necklace';
     var hasVars=p.variations&&p.variations.length>0&&p.variations.some(function(v){return v.name&&v.name.trim()});
-    if(isOut){
-      var pjReq=JSON.stringify({id:p.id,name:p.name,sku:p.sku||'',category:p.category,price:p.price}).replace(/"/g,'&quot;');
-      addBtn='<button class="btn-add" style="background:rgba(45,27,78,0.5);border-color:var(--plum);color:var(--lavender);" data-action="restock" data-p="'+pjReq+'">✦ Request More ✦</button>';
-    }
-    else if(hasVars){
+    if(hasVars){
       // Store full product for later lookup
       varProductStore[p.id]=p;
       var letters=['A','B','C','D','E','F'];
@@ -1254,7 +1226,7 @@ function renderProducts(){
     }
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
     var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
-    return'<div class="product-card'+(isOut?' out-of-stock':'')+'">'
+    return'<div class="product-card">'
       +(isLow?'<div class="badge">'+(qty===1?'1 left':qty+' left')+'</div>':'')
       +imgSection
       +'<div class="product-info">'
@@ -1628,6 +1600,22 @@ function addNecklaceToCart(){
 }
 document.getElementById('necklaceModal').addEventListener('click',function(e){if(e.target===this)closeNecklace();});
 
+// ── Add variation product to cart (non-necklace, non-bracelet) ─
+function addVarToCart(pid){
+  var p=varProductStore[pid];if(!p)return;
+  var vi=selectedVarOpts[pid]||0;
+  var v=p.variations[vi];if(!v)return;
+  var qty=parseInt(v.qty)||0;
+  var itemId=p.id+'-v'+vi;
+  var existing=cart.find(function(c){return c.id===itemId});
+  var inCart=existing?(existing.qty||1):0;
+  if(inCart>=qty){notify('✦ Sorry — only '+qty+' available!');return;}
+  var photo=(v.photos&&v.photos.length)?v.photos[0]:(p.photos&&p.photos.length?p.photos[0]:null);
+  var item={id:itemId,name:p.name+' — '+(v.name||''),price:parseFloat(v.price||p.price)||0,photo:photo,qty:1,sku:p.sku||''};
+  if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
+  renderCart();notify('✦ Added to bag!');
+}
+
 // Event delegation for data-action buttons
 document.addEventListener('click',function(e){
   var btn=e.target.closest('[data-action]');
@@ -1636,10 +1624,6 @@ document.addEventListener('click',function(e){
   var pid=btn.getAttribute('data-pid');
   var raw=btn.getAttribute('data-p');
   // Variation actions use pid lookup
-  if(action==='restock'){
-    try{var rp=JSON.parse(raw.replace(/&quot;/g,'"'));openReq(rp);}catch(e){}
-    return;
-  }
   if(action==='varadd'&&pid){addVarToCart(pid);return;}
   if(action==='varnecklace'&&pid){
     var vp=varProductStore[pid];
@@ -1686,65 +1670,6 @@ document.addEventListener('click',function(e){
     if(action==='sizing')openSizingDirect(p);
     if(action==='necklace')openNecklaceDirect(p);
   }catch(err){console.log('btn parse error',err);}
-});
-
-// ── Request More / Restock ────────────────────────────────
-var currentReqProduct = null;
-
-function openReq(product) {
-  currentReqProduct = product;
-  var info = '<strong>' + product.name + '</strong><br/>'
-    + (product.sku ? 'SKU: ' + product.sku + '<br/>' : '')
-    + 'Category: ' + product.category + '<br/>'
-    + 'Price: $' + parseFloat(product.price).toFixed(2);
-  document.getElementById('reqItemInfo').innerHTML = info;
-  document.getElementById('reqEmail').value = '';
-  document.getElementById('reqNote').value = '';
-  document.getElementById('reqModal').classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeReq() {
-  document.getElementById('reqModal').classList.remove('show');
-  document.body.style.overflow = '';
-  currentReqProduct = null;
-}
-
-function submitRestock() {
-  var email = document.getElementById('reqEmail').value.trim();
-  var note = document.getElementById('reqNote').value.trim();
-  if (!email || !email.includes('@')) { notify('✦ Please enter a valid email'); return; }
-  if (!currentReqProduct) return;
-  var p = currentReqProduct;
-  var body = 'Restock Request\n\nProduct: ' + p.name
-    + '\nSKU: ' + (p.sku || 'N/A')
-    + '\nCategory: ' + p.category
-    + '\nPrice: $' + parseFloat(p.price).toFixed(2)
-    + '\nCustomer Email: ' + email
-    + (note ? '\nNote: ' + note : '');
-  fetch('https://formspree.io/f/xdapqqkp', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: email,
-      subject: 'Restock Request: ' + p.name,
-      message: body,
-      _replyto: email
-    })
-  }).then(function(r) {
-    if (r.ok) {
-      closeReq();
-      notify('✦ Request sent! We\'ll let you know when it\'s back.');
-    } else {
-      notify('✦ Something went wrong. Try again!');
-    }
-  }).catch(function() {
-    notify('✦ Something went wrong. Try again!');
-  });
-}
-
-document.getElementById('reqModal').addEventListener('click', function(e) {
-  if (e.target === this) closeReq();
 });
 
 // Load products & render cart
