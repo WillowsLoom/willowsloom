@@ -1147,64 +1147,9 @@ function filterProducts(cat,btn){
   btn.classList.add('active');renderProducts()
 }
 
-// Moon necklace SKUs to consolidate
-var MOON_LOBSTER_SKUS=['NK-RS-001','NK-RS-005','NK-RS-008'];
-
-// Global store for moon photos and products (avoids data attribute size limits)
-var moonPhotoStore=[];
-var moonProdStore=[];
-
 // Global store for all variation products keyed by id
 var varProductStore={};
 var selectedVarOpts={};
-
-function buildMoonCard(moonItems){
-
-  var letters=['A','B','C'];
-  var descs=['Rustic Purplish · Pink & Blue yarn','Rose · Pink & Blue yarn','Rustic Purplish · Light Pink & Purple yarn'];
-  var sorted=MOON_LOBSTER_SKUS.map(function(sku){return moonItems.find(function(p){return p.sku===sku})}).filter(Boolean);
-  if(!sorted.length)return'';
-
-  // Store photos and products in JS variables (not data attributes)
-  moonPhotoStore=sorted.map(function(p){return p.photos&&p.photos.length?p.photos[0]:''});
-  moonProdStore=sorted.map(function(p){return{id:p.id,name:p.name,price:p.price,qty:parseInt(p.qty)||0,photos:p.photos||[]}});
-
-  var mainPhoto=moonPhotoStore[0]||null;
-  var optBtns=sorted.map(function(p,i){
-    var qty=parseInt(p.qty)||0;
-    return '<button class="moon-opt'+(i===0?' moon-opt-active':'')+'" data-idx="'+i+'" '+(qty<=0?'disabled':'')+' onclick="selectMoonOption(this)">'
-      +'<span class="moon-opt-letter">'+letters[i]+'</span>'
-      +'<span class="moon-opt-desc">'+descs[i]+'</span>'
-      +'<span class="moon-opt-price">$'+parseFloat(p.price).toFixed(2)+'</span>'
-      +(qty<=0?'<span class="moon-opt-sold">Sold Out</span>':qty<=5?'<span style="font-size:10px;color:'+(qty===1?'#f87171':qty<=3?'#fbbf24':'#a78bfa')+';margin-left:4px;">'+qty+' left</span>':'')
-      +'</button>';
-  }).join('');
-
-  var totalQty=sorted.reduce(function(s,p){return s+(parseInt(p.qty)||0)},0);
-  var moonReqData=JSON.stringify({id:'moon-collection',name:'Moon Pendant Crochet Necklace',sku:'NK-MOON',category:'Necklaces',price:15}).replace(/"/g,'&quot;');
-  var addBtn=totalQty>0?'<button class="btn-add" onclick="showMoonNecklaceInfo()">\u2726 Add to Bag \u2726</button>':'<button class="btn-add" style="background:rgba(45,27,78,0.5);border-color:var(--plum);color:var(--lavender);" data-action="restock" data-p="'+moonReqData+'">\u2726 Request More \u2726</button>';
-
-  return '<div class="product-card moon-collection" id="moonCard">'
-    +'<div class="moon-img-wrap" id="moonImgWrap">'+(mainPhoto?'<img id="moonMainImg" src="'+mainPhoto+'" style="width:100%;height:100%;object-fit:cover;object-position:center;">':'<span style="font-size:48px">\uD83C\uDF19</span>')+'</div>'
-    +'<div class="product-info">'
-    +'<div class="product-name">Moon Pendant Crochet Necklace</div>'
-    +'<div class="product-cat">Necklaces \u00b7 Handmade Resin \u00b7 Lobster Clasp</div>'
-    +'<div class="product-price">$15.00</div>'
-    +(totalQty>0&&totalQty<=5?'<div style="font-size:11px;color:'+(totalQty===1?'#f87171':totalQty<=3?'#fbbf24':'#a78bfa')+';letter-spacing:1px;margin-bottom:8px;">'+totalQty+' left</div>':'')
-    +'<div style="font-size:11px;color:var(--lavender);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">Choose your style:</div>'
-    +'<div class="moon-options">'+optBtns+'</div>'
-    +addBtn+'</div></div>';
-}
-
-
-var selectedMoonIdx=0;
-function selectMoonOption(btn){
-  document.querySelectorAll('.moon-opt').forEach(function(b){b.classList.remove('moon-opt-active')});
-  btn.classList.add('moon-opt-active');
-  selectedMoonIdx=parseInt(btn.getAttribute('data-idx'))||0;
-  moonCurrentPhotoIdx=0;
-  renderMoonPhoto();
-}
 
 function selectVarOpt(btn){
   var pid=btn.getAttribute('data-pid');
@@ -1230,102 +1175,11 @@ function selectVarOpt(btn){
   }
 }
 
-var moonCurrentPhotoIdx=0;
-function renderMoonPhoto(){
-  var prod=moonProdStore[selectedMoonIdx];
-  if(!prod)return;
-  var photos=prod.photos||[];
-  if(!photos.length)return;
-  var photo=photos[moonCurrentPhotoIdx]||photos[0];
-  var wrap=document.getElementById('moonImgWrap');
-  if(!wrap)return;
-  var dotsHtml='';
-  if(photos.length>1){
-    dotsHtml='<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:4;">'
-      +photos.map(function(_,i){return'<span onclick="moonPhotoGo('+i+')" style="width:7px;height:7px;border-radius:50%;cursor:pointer;background:'+(i===moonCurrentPhotoIdx?'var(--gold)':'rgba(255,255,255,0.35)')+';display:inline-block;transition:background 0.2s;"></span>'}).join('')
-      +'</div>';
-  }
-  var arrowsHtml='';
-  if(photos.length>1){
-    arrowsHtml='<button onclick="moonPhotoGo('+(((moonCurrentPhotoIdx-1)+photos.length)%photos.length)+')" style="position:absolute;left:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;">&#8249;</button>'
-      +'<button onclick="moonPhotoGo('+(((moonCurrentPhotoIdx+1))%photos.length)+')" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;">&#8250;</button>';
-  }
-  wrap.innerHTML='<div style="position:relative;width:100%;height:100%;">'
-    +'<img id="moonMainImg" src="'+photo+'" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">'
-    +arrowsHtml+dotsHtml
-    +'</div>';
-}
-
-function moonPhotoGo(idx){
-  moonCurrentPhotoIdx=idx;
-  renderMoonPhoto();
-}
-function showMoonNecklaceInfo(){
-  // Open necklace length modal but use moon cart on confirm
-  document.getElementById('necklaceNote').value='';
-  // Override the add button temporarily
-  var addBtn=document.querySelector('.nk-add-btn');
-  if(addBtn){
-    addBtn.onclick=function(){
-      var note=document.getElementById('necklaceNote').value.trim();
-      document.getElementById('necklaceModal').classList.remove('show');
-      document.body.style.overflow='';
-      addMoonToCartWithNote(note);
-      // Restore original onclick
-      addBtn.onclick=function(){addNecklaceToCart()};
-    }
-  }
-  document.getElementById('necklaceModal').classList.add('show');
-  document.body.style.overflow='hidden';
-}
-
-function addMoonToCartWithNote(note){
-  try{
-    var prods=moonProdStore;
-    var p=prods[selectedMoonIdx];if(!p)return;
-    var labels=['A','B','C'];
-    var descs2=['Rustic Purplish, Pink & Blue','Rose, Pink & Blue','Rustic Purplish, Light Pink & Purple'];
-    var itemId=p.id+'-moon';
-    var maxQty=getInventoryQty(p.id,null);
-    var ex=cart.find(function(c){return c.id===itemId});
-    var currentInCart=ex?(ex.qty||1):0;
-    if(currentInCart>=maxQty){notify('✦ Sorry — only '+maxQty+' available!');return;}
-    var item={id:itemId,name:'Moon Pendant Necklace — Option '+labels[selectedMoonIdx]+' ('+descs2[selectedMoonIdx]+')'+(note?' · '+note:''),price:parseFloat(p.price)||15,photo:p.photos&&p.photos.length?p.photos[0]:null,qty:1};
-    if(ex){ex.qty=(ex.qty||1)+1}else{cart.push(item)}
-    renderCart();notify('✦ Added to bag!');
-  }catch(e){}
-}
-
-function addMoonToCart(){
-  try{
-    var prods=moonProdStore;
-    var p=prods[selectedMoonIdx];if(!p)return;
-    var labels=['A','B','C'];
-    var descs2=['Rustic Purplish, Pink & Blue','Rose, Pink & Blue','Rustic Purplish, Light Pink & Purple'];
-    var itemId=p.id+'-moon';
-    var maxQty=getInventoryQty(p.id,null);
-    var ex=cart.find(function(c){return c.id===itemId});
-    var currentInCart=ex?(ex.qty||1):0;
-    if(currentInCart>=maxQty){notify('✦ Sorry — only '+maxQty+' available!');return;}
-    var item={id:itemId,name:'Moon Pendant Necklace — Option '+labels[selectedMoonIdx]+' ('+descs2[selectedMoonIdx]+')',price:parseFloat(p.price)||15,photo:p.photos&&p.photos.length?p.photos[0]:null,qty:1};
-    if(ex){ex.qty=(ex.qty||1)+1}else{cart.push(item)}
-    renderCart();notify('✦ Added to bag!');
-  }catch(e){}
-}
-
 function renderProducts(){
   var grid=document.getElementById('productsGrid');
-  var HIDE_SKUS=['NK-RS-001','NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-005','NK-RS-007','NK-RS-008'];
-  var moonItems=products.filter(function(p){return MOON_LOBSTER_SKUS.indexOf(p.sku)>=0;});
-  MOON_LOBSTER_SKUS=moonItems.map(function(p){return p.sku;});
-  HIDE_SKUS=['NK-RS-002','NK-RS-003','NK-RS-004','NK-RS-007'];
-  var others=products.filter(function(p){
-    return MOON_LOBSTER_SKUS.indexOf(p.sku)<0&&HIDE_SKUS.indexOf(p.sku)<0;
-  });
-  var filtered=currentFilter==='All'?others:others.filter(function(p){return p.category===currentFilter});
-  var showMoon=(currentFilter==='All'||currentFilter==='Necklaces')&&moonItems.length>0;
-  var moonCard=showMoon?buildMoonCard(moonItems):'';
-  if(!filtered.length&&!moonCard){grid.innerHTML='<div class="empty-shop" style="grid-column:1/-1"><p>\uD83C\uDF19 The collection is being woven...<br/><em>Check back soon</em></p></div>';return;}
+  var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
+  var moonCard='';
+  if(!filtered.length){grid.innerHTML='<div class="empty-shop" style="grid-column:1/-1"><p>\uD83C\uDF19 The collection is being woven...<br/><em>Check back soon</em></p></div>';return;}
   var cards=filtered.map(function(p){
     var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     var isLow=qty>0&&qty<=5;var isOut=qty===0;
@@ -1412,9 +1266,7 @@ function renderProducts(){
       +tags+addBtn
       +'</div></div>';
   }).join('');
-  grid.innerHTML=moonCard+cards;
-  // Render moon card photos after DOM is updated
-  if(moonCard)setTimeout(renderMoonPhoto,50);
+  grid.innerHTML=cards;
 }
 
 // ── FAQ ────────────────────────────────────────────────────────
@@ -1775,19 +1627,6 @@ function addNecklaceToCart(){
   notify('✦ Added to bag!'+(note?' Custom length noted!':''));
 }
 document.getElementById('necklaceModal').addEventListener('click',function(e){if(e.target===this)closeNecklace();});
-
-// Moon necklace uses necklace modal too
-function showMoonNecklaceInfo(){
-  document.getElementById('necklaceNote').value='';
-  document.getElementById('nkAddBtn').onclick=function(){
-    var note=document.getElementById('necklaceNote').value.trim();
-    closeNecklace();
-    addMoonToCartWithNote(note);
-    document.getElementById('nkAddBtn').onclick=addNecklaceToCart;
-  };
-  document.getElementById('necklaceModal').classList.add('show');
-  document.body.style.overflow='hidden';
-}
 
 // Event delegation for data-action buttons
 document.addEventListener('click',function(e){
