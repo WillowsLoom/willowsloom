@@ -1047,6 +1047,25 @@ async function submitStripePayment(){
         "Thank you — your piece is being woven with love.<br/><em style='color:var(--lavender);'>A confirmation email is on its way to you.</em>";
     }
     document.getElementById('stripeSuccess').style.display='block';
+    // ── Google Analytics purchase event ──────────────────────
+    try{
+      if(typeof gtag!=='undefined'){
+        gtag('event','purchase',{
+          transaction_id: result.paymentIntent.id,
+          currency:'USD',
+          value: grandTotal/100,
+          items: cart.map(function(c,i){
+            return{
+              item_id: c.sku||c.id,
+              item_name: c.name,
+              price: c.price,
+              quantity: c.qty||1,
+              index: i
+            };
+          })
+        });
+      }
+    }catch(e){console.log('GA tracking error:',e);}
     cart=[];renderCart();
   }
 }
