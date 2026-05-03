@@ -1109,7 +1109,6 @@ function loadProducts(){
   }).then(function(r){return r.json()}).then(function(data){
     products=(data||[]).map(function(p){
       function tryParse(v){try{return typeof v==='string'?JSON.parse(v):v||[]}catch(e){return[]}}
-      // photos_data contains base64 photos saved from portal
       var photos=tryParse(p.photos_data||p.photos||'[]');
       return{
         id:p.id,name:p.name,category:p.category,sku:p.sku,
@@ -1119,8 +1118,7 @@ function loadProducts(){
         photos:Array.isArray(photos)?photos:[]
       }
     }).filter(function(p){return p.name});
-    // Deduplicate by name — if two records share the same name, keep the richer one
-    // (more photos, has variations, has a price). This handles accidental double-saves.
+    // Deduplicate: exact name match keeps richer record
     var nameMap={};
     products.forEach(function(p){
       var key=(p.name||'').trim().toLowerCase();
@@ -1131,15 +1129,14 @@ function loadProducts(){
       if(!nameMap[key]||score>nameMap[key].score){nameMap[key]={p:p,score:score};}
     });
     products=Object.keys(nameMap).map(function(k){return nameMap[k].p;});
-    // Also merge from localStorage as fallback for photos
+    // Merge photos from localStorage if Supabase has none (check all known keys)
     try{
-      var raw=localStorage.getItem('gemboss_v6')||localStorage.getItem('willows_loom_v1');
+      var raw=localStorage.getItem('gemboss_v7')||localStorage.getItem('gemboss_v6')||localStorage.getItem('willows_loom_v1');
       if(raw){
         var local=JSON.parse(raw);
         var localItems=(local.finished||[]);
         products=products.map(function(p){
-          // If Supabase has no photos but local does, use local
-          if((!p.photos||!p.photos.length)){
+          if(!p.photos||!p.photos.length){
             var match=localItems.find(function(l){return l.id===p.id||l.name===p.name});
             if(match&&match.photos&&match.photos.length)p.photos=match.photos;
           }
@@ -1147,8 +1144,6 @@ function loadProducts(){
         });
       }
     }catch(e2){}
-    // Build product lookup map
-    products.forEach(function(p){productMap[p.id]=p;if(p.variations&&p.variations.length)varProductStore[p.id]=p;});
     renderProducts()
   }).catch(function(){
     // Full localStorage fallback
@@ -1156,7 +1151,6 @@ function loadProducts(){
       var raw=localStorage.getItem('gemboss_v6')||localStorage.getItem('willows_loom_v1');
       if(raw){var data=JSON.parse(raw);products=data.finished||[]}
     }catch(e){}
-    products.forEach(function(p){productMap[p.id]=p;if(p.variations&&p.variations.length)varProductStore[p.id]=p;});
     renderProducts()
   })
 }
@@ -1212,6 +1206,10 @@ function selectVarOpt(btn){
 
 function renderProducts(){
   var grid=document.getElementById('productsGrid');
+  // Reset per-render stores
+  displayVarStore={};
+  varProductStore={};
+  selectedVarOpts={};
   var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
   filtered=filtered.filter(function(p){
     var dv=(p.variations||[]).filter(function(v){return v.name&&v.name.trim();});
