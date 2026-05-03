@@ -1791,14 +1791,6 @@ document.addEventListener('click',function(e){
     if(action==='necklace'){openNecklaceDirect(pp);return;}
     if(action==='addplain'){addToCart(pp,null);return;}
   }
-  // Legacy fallback: data-p JSON (kept for any old cached HTML)
-  var raw=btn.getAttribute('data-p');
-  if(!raw)return;
-  try{
-    var p=JSON.parse(raw.replace(/&quot;/g,'"'));
-    if(action==='sizing')openSizingDirect(p);
-    if(action==='necklace')openNecklaceDirect(p);
-  }catch(err){console.log('btn parse error',err);}
 });
 
 // Load products & render cart
