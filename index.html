@@ -1118,17 +1118,23 @@ function loadProducts(){
         photos:Array.isArray(photos)?photos:[]
       }
     }).filter(function(p){return p.name});
-    // Deduplicate: exact name match keeps richer record
-    var nameMap={};
+    // Deduplicate — exact name first, then fuzzy match for typos
+    // Fuzzy: strip spaces/punctuation, compare normalized strings
+    function normName(n){return(n||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+    function scoreP(p){
+      return (p.photos&&p.photos.length?p.photos.length:0)
+            +(p.variations&&p.variations.length?10:0)
+            +(parseFloat(p.price)>0?5:0)
+            +(parseInt(p.qty)>0?3:0);
+    }
+    var dedupd=[];
     products.forEach(function(p){
-      var key=(p.name||'').trim().toLowerCase();
-      var score=(p.photos&&p.photos.length?p.photos.length:0)
-               +(p.variations&&p.variations.length?10:0)
-               +(parseFloat(p.price)>0?5:0)
-               +(parseInt(p.qty)>0?3:0);
-      if(!nameMap[key]||score>nameMap[key].score){nameMap[key]={p:p,score:score};}
+      var pNorm=normName(p.name);
+      var match=dedupd.find(function(q){return normName(q.name)===pNorm;});
+      if(!match){dedupd.push(p);}
+      else if(scoreP(p)>scoreP(match)){dedupd.splice(dedupd.indexOf(match),1,p);}
     });
-    products=Object.keys(nameMap).map(function(k){return nameMap[k].p;});
+    products=dedupd;
     // Merge photos from localStorage if Supabase has none (check all known keys)
     try{
       var raw=localStorage.getItem('gemboss_v7')||localStorage.getItem('gemboss_v6')||localStorage.getItem('willows_loom_v1');
