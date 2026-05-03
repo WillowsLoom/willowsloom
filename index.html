@@ -609,8 +609,8 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 <!-- Bracelet Sizing Modal -->
 <div id="sizingModal">
   <div class="sizing-box">
-    <div class="sizing-title">✦ Bracelet Sizing</div>
-    <p class="sizing-sub" id="sizingSub">Figaro chain · Toggle clasp · Sold as a set</p>
+    <div class="sizing-title" id="sizingTitle">✦ Bracelet Sizing</div>
+    <p class="sizing-sub" id="sizingSub">Handwoven crochet cord</p>
 
     <!-- Step 1: Style (only if variations) -->
     <div id="sizingStyleStep" style="display:none;margin-bottom:20px;">
@@ -623,7 +623,8 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <div id="sizingSizeStep">
       <div id="sizingStyleSummary" style="display:none;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--stardust);line-height:1.6;"></div>
 
-      <table class="sizing-table">
+      <!-- Bracelet table -->
+      <table class="sizing-table" id="braceletSizeTable">
         <thead>
           <tr><th>Size</th><th>Total Length</th><th>Chain</th><th>Fits Wrist</th></tr>
         </thead>
@@ -634,19 +635,39 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
         </tbody>
       </table>
 
-      <div style="background:rgba(107,63,160,0.1);border:1px solid rgba(107,63,160,0.3);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:12px;color:var(--lavender);line-height:1.7;">
+      <!-- Anklet table -->
+      <table class="sizing-table" id="ankletSizeTable" style="display:none;">
+        <thead>
+          <tr><th>Size</th><th>Total Length</th><th>Fits Ankle</th></tr>
+        </thead>
+        <tbody>
+          <tr class="sz-row" data-size="S"><td class="sz-name">S</td><td>9"</td><td>8"–8.5"</td></tr>
+          <tr class="sz-row sizing-selected" data-size="M"><td class="sz-name">M</td><td>9.5"</td><td>8.5"–9"</td></tr>
+          <tr class="sz-row" data-size="L"><td class="sz-name">L</td><td>10"</td><td>9"–9.5"</td></tr>
+          <tr class="sz-row" data-size="XL"><td class="sz-name">XL</td><td>10.5"</td><td>9.5"–10"</td></tr>
+        </tbody>
+      </table>
+
+      <div id="sizingMeasureHint" style="background:rgba(107,63,160,0.1);border:1px solid rgba(107,63,160,0.3);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:12px;color:var(--lavender);line-height:1.7;">
         💡 <strong style="color:var(--stardust);">How to measure:</strong> Wrap a soft tape measure snugly around your wrist bone. Add 0.5" for a comfortable fit.
       </div>
 
-      <div class="sizing-btns">
+      <div class="sizing-btns" id="braceletSizeBtns">
         <button class="sz-btn" data-sz="S" onclick="selectSize(this)">S — 6.5"</button>
         <button class="sz-btn selected" data-sz="M" onclick="selectSize(this)">M — 7"</button>
         <button class="sz-btn" data-sz="L" onclick="selectSize(this)">L — 7.5"</button>
       </div>
 
+      <div class="sizing-btns" id="ankletSizeBtns" style="display:none;">
+        <button class="sz-btn" data-sz="S" onclick="selectSize(this)">S — 9"</button>
+        <button class="sz-btn selected" data-sz="M" onclick="selectSize(this)">M — 9.5"</button>
+        <button class="sz-btn" data-sz="L" onclick="selectSize(this)">L — 10"</button>
+        <button class="sz-btn" data-sz="XL" onclick="selectSize(this)">XL — 10.5"</button>
+      </div>
+
       <div class="sizing-custom">
-        <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">My wrist measures (optional):</label>
-        <input type="number" id="wristInput" step="0.25" min="4" max="12" placeholder='e.g. 6.5"' style="width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:15px;border-radius:4px;outline:none;margin-bottom:10px;box-sizing:border-box;" oninput="autoSelectSize(this.value)"/>
+        <label id="sizingMeasureLabel" style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">My wrist measures (optional):</label>
+        <input type="number" id="wristInput" step="0.25" min="4" max="16" placeholder='e.g. 6.5"' style="width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:15px;border-radius:4px;outline:none;margin-bottom:10px;box-sizing:border-box;" oninput="autoSelectSize(this.value)"/>
         <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Need a custom size or have a note?</label>
         <textarea id="sizingNote" placeholder="e.g. Please make 8 inches total, my wrist is 7.75..." style="width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:14px;border-radius:4px;outline:none;min-height:68px;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
@@ -1102,6 +1123,18 @@ function loadProducts(){
         photos:Array.isArray(photos)?photos:[]
       }
     }).filter(function(p){return p.name});
+    // Deduplicate by name — if two records share the same name, keep the richer one
+    // (more photos, has variations, has a price). This handles accidental double-saves.
+    var nameMap={};
+    products.forEach(function(p){
+      var key=(p.name||'').trim().toLowerCase();
+      var score=(p.photos&&p.photos.length?p.photos.length:0)
+               +(p.variations&&p.variations.length?10:0)
+               +(parseFloat(p.price)>0?5:0)
+               +(parseInt(p.qty)>0?3:0);
+      if(!nameMap[key]||score>nameMap[key].score){nameMap[key]={p:p,score:score};}
+    });
+    products=Object.keys(nameMap).map(function(k){return nameMap[k].p;});
     // Also merge from localStorage as fallback for photos
     try{
       var raw=localStorage.getItem('gemboss_v6')||localStorage.getItem('willows_loom_v1');
@@ -1227,7 +1260,9 @@ function renderProducts(){
     var addBtn='';
     var cat=(p.category||'').toLowerCase();
     var isBracelet=cat==='bracelets'||cat==='bracelet';
+    var isAnklet=cat==='anklets'||cat==='anklet';
     var isNecklace=cat==='necklaces'||cat==='necklace';
+    var needsSizing=isBracelet||isAnklet;
     if(hasVars){
       // Store full product for later lookup
       varProductStore[p.id]=p;
@@ -1252,12 +1287,19 @@ function renderProducts(){
       addBtn='<div class="moon-options var-options" id="varopts-'+p.id+'">'+optBtns+'</div>'
         +(isNecklace
           ?'<button class="btn-add" data-action="varnecklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>'
-          :isBracelet
+          :needsSizing
           ?'<button class="btn-add" data-action="varsizing" data-pid="'+p.id+'">📏 Choose Size ✦</button>'
           :'<button class="btn-add" data-action="varadd" data-pid="'+p.id+'">✦ Add to Bag ✦</button>');
     }else{
-      var pj=JSON.stringify(p).replace(/'/g,"\'");
-      addBtn='<button class="btn-add" onclick=\'addToCart('+pj+',null)\'>✦ Add to Bag ✦</button>';
+      // No variations — still route to correct modal for necklaces/bracelets/anklets
+      var pj=JSON.stringify(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      if(isNecklace){
+        addBtn='<button class="btn-add" data-action="necklace" data-p=\''+pj+'\'>✦ Add to Bag ✦</button>';
+      }else if(needsSizing){
+        addBtn='<button class="btn-add" data-action="sizing" data-p=\''+pj+'\'>📏 Choose Size ✦</button>';
+      }else{
+        addBtn='<button class="btn-add" onclick=\'addToCart('+pj+',null)\'>✦ Add to Bag ✦</button>';
+      }
     }
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
     var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;aspect-ratio:3/4;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
@@ -1465,13 +1507,34 @@ document.addEventListener('touchend',function(e){
 // ── Product lookup map (populated after loadProducts) ────────
 var productMap={};
 
-// ── Bracelet Sizing Chart ─────────────────────────────────────
+// ── Bracelet / Anklet Sizing Chart ───────────────────────────
 var currentSizingProduct=null;
 var selectedSize='M';
+var currentSizingType='bracelet'; // 'bracelet' or 'anklet'
 
 function openSizingDirect(product){
   currentSizingProduct=product;
   if(!currentSizingProduct)return;
+
+  // Detect whether this is an anklet
+  var pcat=(product.category||'').toLowerCase();
+  currentSizingType=(pcat==='anklets'||pcat==='anklet')?'anklet':'bracelet';
+  var isAnkletMode=currentSizingType==='anklet';
+
+  // Swap title, measure hint, and size tables
+  document.getElementById('sizingTitle').textContent=isAnkletMode?'✦ Anklet Sizing':'✦ Bracelet Sizing';
+  document.getElementById('braceletSizeTable').style.display=isAnkletMode?'none':'';
+  document.getElementById('ankletSizeTable').style.display=isAnkletMode?'':'none';
+  document.getElementById('braceletSizeBtns').style.display=isAnkletMode?'none':'';
+  document.getElementById('ankletSizeBtns').style.display=isAnkletMode?'':'none';
+  document.getElementById('sizingMeasureLabel').textContent=isAnkletMode?'My ankle measures (optional):':'My wrist measures (optional):';
+  document.getElementById('sizingMeasureHint').innerHTML=isAnkletMode
+    ?'💡 <strong style="color:var(--stardust);">How to measure:</strong> Wrap a soft tape measure around the narrowest part of your ankle. Add 0.5" for comfort.'
+    :'💡 <strong style="color:var(--stardust);">How to measure:</strong> Wrap a soft tape measure snugly around your wrist bone. Add 0.5" for a comfortable fit.';
+  document.getElementById('sizingNote').placeholder=isAnkletMode
+    ?'e.g. Please make 11 inches total, my ankle is 10.5...'
+    :'e.g. Please make 8 inches total, my wrist is 7.75...';
+
   var vars=(product.variations||[]).filter(function(v){return v.name&&v.name.trim()});
   var styleStep=document.getElementById('sizingStyleStep');
   var sizeStep=document.getElementById('sizingSizeStep');
@@ -1479,7 +1542,6 @@ function openSizingDirect(product){
   var summary=document.getElementById('sizingStyleSummary');
 
   if(vars.length>0){
-    // Build style buttons
     var btns=vars.map(function(v,i){
       var qty=parseInt(v.qty)||0;
       var letter=String.fromCharCode(65+i);
@@ -1503,7 +1565,8 @@ function openSizingDirect(product){
     summary.style.display='none';
   }
 
-  // Reset size buttons
+  // Reset size selection to M
+  selectedSize='M';
   document.querySelectorAll('.sz-btn[data-sz]').forEach(function(b){
     b.classList.toggle('selected',b.getAttribute('data-sz')==='M');
   });
@@ -1511,6 +1574,7 @@ function openSizingDirect(product){
     r.classList.toggle('sizing-selected',r.getAttribute('data-size')==='M');
   });
   document.getElementById('sizingNote').value='';
+  document.getElementById('wristInput').value='';
   document.getElementById('sizingModal').classList.add('show');
   document.body.style.overflow='hidden';
 }
