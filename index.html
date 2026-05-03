@@ -216,7 +216,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 .moon-opt:disabled{opacity:0.4;cursor:not-allowed}
 .moon-opt:hover:not(:disabled){border-color:var(--lavender);background:rgba(107,63,160,0.2)}
 .moon-opt.moon-opt-active{border-color:var(--gold);background:rgba(201,168,76,0.1)}
-.moon-opt-letter{font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);min-width:20px;font-weight:700}
+.moon-opt-letter{font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;color:var(--gold);min-width:20px;font-weight:700}
 .moon-opt-desc{flex:1;font-size:12px;color:var(--stardust);letter-spacing:0.5px}
 .moon-opt-price{font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold)}
 .moon-opt-sold{font-size:10px;color:var(--rose);letter-spacing:1px;text-transform:uppercase}
@@ -243,7 +243,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 .moon-opt:disabled{opacity:0.4;cursor:not-allowed}
 .moon-opt:hover:not(:disabled){border-color:var(--lavender);background:rgba(107,63,160,0.2)}
 .moon-opt.moon-opt-active{border-color:var(--gold);background:rgba(201,168,76,0.1)}
-.moon-opt-letter{font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);min-width:20px;font-weight:700}
+.moon-opt-letter{font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;color:var(--gold);min-width:20px;font-weight:700}
 .moon-opt-desc{flex:1;font-size:12px;color:var(--stardust);letter-spacing:0.5px}
 .moon-opt-price{font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold-light)}
 .moon-opt-sold{font-size:10px;color:var(--rose);letter-spacing:1px;text-transform:uppercase}
@@ -1144,7 +1144,7 @@ var selectedVarOpts={};
 
 function selectVarOpt(btn){
   var pid=btn.getAttribute('data-pid');
-  var vi=parseInt(btn.getAttribute('data-vi'));// -1 = Option A (base), 0+ = variations[]
+  var vi=parseInt(btn.getAttribute('data-vi'))||0;
   // Deactivate siblings in the same product's option group
   var container=document.getElementById('varopts-'+pid);
   if(container){
@@ -1152,13 +1152,12 @@ function selectVarOpt(btn){
   }
   btn.classList.add('moon-opt-active');
   selectedVarOpts[pid]=vi;
-  // Swap product card image: vi=-1 uses base product photos, vi>=0 uses variation photos
+  // Swap product card image to match selected variation
   var imgWrap=document.getElementById('pimg-'+pid);
   if(imgWrap){
     var p=varProductStore[pid];
     if(p){
-      // vi=-1 means Option A (base product), vi>=0 means variations[vi]
-      var v=vi>=0?p.variations[vi]:null;
+      var v=p.variations[vi];
       var photos=(v&&v.photos&&v.photos.length)?v.photos:(p.photos||[]);
       if(photos.length===1){
         imgWrap.innerHTML='<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);">';
@@ -1232,27 +1231,15 @@ function renderProducts(){
     if(hasVars){
       // Store full product for later lookup
       varProductStore[p.id]=p;
-      // Default selection is Option A (base product, vi=-1)
-      if(!selectedVarOpts.hasOwnProperty(p.id))selectedVarOpts[p.id]=-1;
-      // Option A = base product (vi=-1); variations[] are B, C, D... (vi=0 is B)
-      var baseQty=parseInt(p.qty)||0;
-      var basePrice=parseFloat(p.price)||0;
-      var baseDesc=(p.attrs&&p.attrs.claspStyle)?p.attrs.claspStyle:'Standard';
-      var optABtn='<button class="moon-opt var-opt moon-opt-active" '
-        +'data-pid="'+p.id+'" data-vi="-1" '
-        +(baseQty<=0?'disabled ':' ')
-        +'onclick="selectVarOpt(this)">'
-        +'<span class="moon-opt-letter">A</span>'
-        +'<span class="moon-opt-desc">'+baseDesc+'</span>'
-        +'<span class="moon-opt-price">$'+basePrice.toFixed(2)+'</span>'
-        +(baseQty<=0?'<span class="moon-opt-sold">Sold Out</span>':baseQty<=5?'<span style="font-size:10px;color:'+(baseQty===1?'#f87171':baseQty<=3?'#fbbf24':'#a78bfa')+';margin-left:4px;">'+baseQty+' left</span>':'')
-        +'</button>';
-      var letters=['B','C','D','E','F','G'];
+      // Reset selection to first available variation on each render
+      if(!selectedVarOpts.hasOwnProperty(p.id))selectedVarOpts[p.id]=0;
+      // Variations are labeled A, B, C... matching their index in variations[]
+      var letters=['A','B','C','D','E','F','G'];
       var optBtns=p.variations.map(function(v,vi){
         var vqty=parseInt(v.qty)||0;
         var vprice=parseFloat(v.price)||parseFloat(p.price)||0;
-        var letter=letters[vi]||String(vi+2);
-        return '<button class="moon-opt var-opt" '
+        var letter=letters[vi]||String(vi+1);
+        return '<button class="moon-opt var-opt'+(vi===0?' moon-opt-active':'')+'" '
           +'data-pid="'+p.id+'" data-vi="'+vi+'" '
           +(vqty<=0?'disabled ':' ')
           +'onclick="selectVarOpt(this)">'
@@ -1262,7 +1249,7 @@ function renderProducts(){
           +(vqty<=0?'<span class="moon-opt-sold">Sold Out</span>':vqty<=5?'<span style="font-size:10px;color:'+(vqty===1?'#f87171':vqty<=3?'#fbbf24':'#a78bfa')+';margin-left:4px;">'+vqty+' left</span>':'')
           +'</button>';
       }).join('');
-      addBtn='<div class="moon-options var-options" id="varopts-'+p.id+'">'+optABtn+optBtns+'</div>'
+      addBtn='<div class="moon-options var-options" id="varopts-'+p.id+'">'+optBtns+'</div>'
         +(isNecklace
           ?'<button class="btn-add" data-action="varnecklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>'
           :isBracelet
@@ -1495,7 +1482,7 @@ function openSizingDirect(product){
     // Build style buttons
     var btns=vars.map(function(v,i){
       var qty=parseInt(v.qty)||0;
-      var letter=String.fromCharCode(66+i);
+      var letter=String.fromCharCode(65+i);
       var price=parseFloat(v.price)||parseFloat(product.price)||0;
       return '<button class="sz-btn'+(i===0?' selected':'')+'" data-varidx="'+i+'" onclick="selectSizingVar(this)">'
         +'<span style="font-family:serif;font-size:13px;color:var(--gold);min-width:20px;font-weight:700;">'+letter+'</span>'
@@ -1537,7 +1524,7 @@ function selectSizingVar(btn){
 function goToSizeStep(){
   var vars=(currentSizingProduct.variations||[]).filter(function(v){return v.name&&v.name.trim()});
   var v=vars[selectedVarIdx];
-  var letter=String.fromCharCode(66+selectedVarIdx);
+  var letter=String.fromCharCode(65+selectedVarIdx);
   var summary=document.getElementById('sizingStyleSummary');
   if(v){
     summary.innerHTML='<strong style="color:var(--gold);">Option '+letter+'</strong> — '+(v.name||'')+(v.attrs&&v.attrs.ringColor?' · '+v.attrs.ringColor+' jump rings':'');
@@ -1577,7 +1564,7 @@ function addBraceletToCart(){
   if(currentInCart>=maxQty){notify('✦ Sorry — only '+maxQty+' available!');return;}
   var note=document.getElementById('sizingNote').value.trim();
   var sizeLabels={S:'6.5"',M:'7"',L:'7.5"'};
-  var letter=selectedVar?(' — Option '+String.fromCharCode(66+selectedVarIdx)+' ('+selectedVar.name+')'):'' ;
+  var letter=selectedVar?(' — Option '+String.fromCharCode(65+selectedVarIdx)+' ('+selectedVar.name+')'):'' ;
   var price=selectedVar&&parseFloat(selectedVar.price)?parseFloat(selectedVar.price):parseFloat(p.price)||0;
   var photo=selectedVar&&selectedVar.photos&&selectedVar.photos.length?selectedVar.photos[0]:p.photos&&p.photos.length?p.photos[0]:null;
   var item={
@@ -1670,16 +1657,15 @@ document.getElementById('necklaceModal').addEventListener('click',function(e){if
 // ── Add variation product to cart (non-necklace, non-bracelet) ─
 function addVarToCart(pid){
   var p=varProductStore[pid];if(!p)return;
-  var vi=selectedVarOpts.hasOwnProperty(pid)?selectedVarOpts[pid]:-1;
-  // vi=-1 = Option A (base product), vi>=0 = variations[vi]
-  var v=vi>=0?p.variations[vi]:null;
-  var qty=v?parseInt(v.qty)||0:parseInt(p.qty)||0;
-  var itemId=p.id+(vi>=0?'-v'+vi:'');
+  var vi=selectedVarOpts[pid]||0;
+  var v=p.variations[vi];if(!v)return;
+  var qty=parseInt(v.qty)||0;
+  var itemId=p.id+'-v'+vi;
   var existing=cart.find(function(c){return c.id===itemId});
   var inCart=existing?(existing.qty||1):0;
   if(inCart>=qty){notify('✦ Sorry — only '+qty+' available!');return;}
-  var photo=v?(v.photos&&v.photos.length?v.photos[0]:(p.photos&&p.photos.length?p.photos[0]:null)):(p.photos&&p.photos.length?p.photos[0]:null);
-  var item={id:itemId,name:p.name+(v?' — '+(v.name||''):''),price:parseFloat(v?v.price:p.price)||0,photo:photo,qty:1,sku:p.sku||''};
+  var photo=(v.photos&&v.photos.length)?v.photos[0]:(p.photos&&p.photos.length?p.photos[0]:null);
+  var item={id:itemId,name:p.name+' — '+(v.name||''),price:parseFloat(v.price||p.price)||0,photo:photo,qty:1,sku:p.sku||''};
   if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
   renderCart();notify('✦ Added to bag!');
 }
@@ -1702,15 +1688,15 @@ document.addEventListener('click',function(e){
       document.getElementById('nkAddBtn').onclick=function(){
         var note=document.getElementById('necklaceNote').value.trim();
         closeNecklace();
-        var vi=selectedVarOpts.hasOwnProperty(pid)?selectedVarOpts[pid]:-1;
-        var v=vi>=0?vp.variations[vi]:null;
+        var vi=selectedVarOpts[pid]||0;
+        var v=vp.variations[vi];
         var qty=parseInt(v?v.qty:vp.qty)||0;
-        var itemId=vp.id+(vi>=0?'-v'+vi:'')+(note?'-c':'');
+        var itemId=vp.id+'-v'+vi+(note?'-c':'');
         var existing=cart.find(function(c){return c.id===itemId});
         var inCart=existing?(existing.qty||1):0;
         if(inCart>=qty){notify('✦ Sorry — only '+qty+' available!');return;}
         var photo=(v&&v.photos&&v.photos.length)?v.photos[0]:(vp.photos&&vp.photos.length?vp.photos[0]:null);
-        var item={id:itemId,name:vp.name+(v?' — '+(v.name||''):'')+(note?' · '+note:''),price:parseFloat(v?v.price:vp.price)||0,photo:photo,qty:1};
+        var item={id:itemId,name:vp.name+' — '+(v?v.name:'')+(note?' · '+note:''),price:parseFloat(v?v.price:vp.price)||0,photo:photo,qty:1};
         if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
         renderCart();notify('✦ Added to bag!'+(note?' Custom length noted!':''));
       };
@@ -1723,8 +1709,8 @@ document.addEventListener('click',function(e){
     var vsp=varProductStore[pid]||products.find(function(x){return x.id===pid});
     if(vsp){
       varProductStore[pid]=vsp;
-      var vi2=selectedVarOpts.hasOwnProperty(pid)?selectedVarOpts[pid]:-1;
-      var vs=vi2>=0?(vsp.variations&&vsp.variations[vi2]):null;
+      var vi2=selectedVarOpts[pid]||0;
+      var vs=vsp.variations&&vsp.variations[vi2];
       var merged=Object.assign({},vsp,{
         price:vs&&vs.price?vs.price:vsp.price,
         qty:vs&&vs.qty?vs.qty:vsp.qty,
