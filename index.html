@@ -672,13 +672,13 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       Lobster clasp styles are just over <strong>19 inches</strong> total length<br/>
       Both sit beautifully as a <strong>princess length</strong> — right at the collarbone
     </div>
-    <div style="margin-bottom:8px;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;">Standard necklace lengths for reference:</div>
+    <div style="margin-bottom:8px;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;">Standard necklace lengths for reference — tap to select:</div>
     <div style="margin-bottom:16px;">
-      <div class="nk-length-row"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">14.5"</div><div class="nk-length-desc">Choker — sits high on the neck</div></div></div>
-      <div class="nk-length-row"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">16"</div><div class="nk-length-desc">Collar — rests at the base of the neck</div></div></div>
-      <div class="nk-length-row nk-selected"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">18–20"</div><div class="nk-length-desc">Princess — sits at or just below the collarbone</div></div><span class="nk-length-badge">✦ Your piece</span></div>
-      <div class="nk-length-row"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">22–24"</div><div class="nk-length-desc">Matinee — falls between collarbone and bust</div></div></div>
-      <div class="nk-length-row"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">28–36"</div><div class="nk-length-desc">Opera — drapes to the bust or below</div></div></div>
+      <div class="nk-length-row" data-len="14.5" data-desc="Choker — 14.5 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">14.5"</div><div class="nk-length-desc">Choker — sits high on the neck</div></div></div>
+      <div class="nk-length-row" data-len="16" data-desc="Collar — 16 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">16"</div><div class="nk-length-desc">Collar — rests at the base of the neck</div></div></div>
+      <div class="nk-length-row nk-selected" data-len="standard" data-desc="" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">18–20"</div><div class="nk-length-desc">Princess — sits at or just below the collarbone</div></div><span class="nk-length-badge">✦ Your piece</span></div>
+      <div class="nk-length-row" data-len="22" data-desc="Matinee — 22 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">22–24"</div><div class="nk-length-desc">Matinee — falls between collarbone and bust</div></div></div>
+      <div class="nk-length-row" data-len="30" data-desc="Opera — 30 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">28–36"</div><div class="nk-length-desc">Opera — drapes to the bust or below</div></div></div>
     </div>
     <div class="nk-custom">
       <label>Need a different length? Leave a message:</label>
@@ -1232,11 +1232,12 @@ function renderProducts(){
     if(hasVars){
       // Store full product for later lookup
       varProductStore[p.id]=p;
-      var letters=['A','B','C','D','E','F'];
+      // Option A = base product; variations[] start at B (index 0 = B, 1 = C, etc.)
+      var letters=['B','C','D','E','F','G'];
       var optBtns=p.variations.map(function(v,vi){
         var vqty=parseInt(v.qty)||0;
         var vprice=parseFloat(v.price)||parseFloat(p.price)||0;
-        var letter=letters[vi]||String(vi+1);
+        var letter=letters[vi]||String(vi+2);
         return '<button class="moon-opt var-opt'+(vi===0?' moon-opt-active':'')+'" '
           +'data-pid="'+p.id+'" data-vi="'+vi+'" '
           +(vqty<=0?'disabled ':' ')
@@ -1480,7 +1481,7 @@ function openSizingDirect(product){
     // Build style buttons
     var btns=vars.map(function(v,i){
       var qty=parseInt(v.qty)||0;
-      var letter=String.fromCharCode(65+i);
+      var letter=String.fromCharCode(66+i);
       var price=parseFloat(v.price)||parseFloat(product.price)||0;
       return '<button class="sz-btn'+(i===0?' selected':'')+'" data-varidx="'+i+'" onclick="selectSizingVar(this)">'
         +'<span style="font-family:serif;font-size:13px;color:var(--gold);min-width:20px;font-weight:700;">'+letter+'</span>'
@@ -1522,7 +1523,7 @@ function selectSizingVar(btn){
 function goToSizeStep(){
   var vars=(currentSizingProduct.variations||[]).filter(function(v){return v.name&&v.name.trim()});
   var v=vars[selectedVarIdx];
-  var letter=String.fromCharCode(65+selectedVarIdx);
+  var letter=String.fromCharCode(66+selectedVarIdx);
   var summary=document.getElementById('sizingStyleSummary');
   if(v){
     summary.innerHTML='<strong style="color:var(--gold);">Option '+letter+'</strong> — '+(v.name||'')+(v.attrs&&v.attrs.ringColor?' · '+v.attrs.ringColor+' jump rings':'');
@@ -1562,7 +1563,7 @@ function addBraceletToCart(){
   if(currentInCart>=maxQty){notify('✦ Sorry — only '+maxQty+' available!');return;}
   var note=document.getElementById('sizingNote').value.trim();
   var sizeLabels={S:'6.5"',M:'7"',L:'7.5"'};
-  var letter=selectedVar?(' — Option '+String.fromCharCode(65+selectedVarIdx)+' ('+selectedVar.name+')'):'' ;
+  var letter=selectedVar?(' — Option '+String.fromCharCode(66+selectedVarIdx)+' ('+selectedVar.name+')'):'' ;
   var price=selectedVar&&parseFloat(selectedVar.price)?parseFloat(selectedVar.price):parseFloat(p.price)||0;
   var photo=selectedVar&&selectedVar.photos&&selectedVar.photos.length?selectedVar.photos[0]:p.photos&&p.photos.length?p.photos[0]:null;
   var item={
@@ -1600,9 +1601,28 @@ function autoSelectSize(wristVal){
 // ── Necklace Length Modal ─────────────────────────────────────
 var currentNecklaceProduct=null;
 
+function selectNecklaceLength(row){
+  // Deselect all rows
+  document.querySelectorAll('#necklaceModal .nk-length-row').forEach(function(r){r.classList.remove('nk-selected');});
+  row.classList.add('nk-selected');
+  var len=row.getAttribute('data-len');
+  var desc=row.getAttribute('data-desc')||'';
+  var noteEl=document.getElementById('necklaceNote');
+  if(len==='standard'){
+    // Standard length — clear custom note (or leave as-is if they typed something)
+    if(noteEl.value&&noteEl.value.indexOf('Please make this')===0)noteEl.value='';
+  }else{
+    noteEl.value='Please make this '+desc;
+  }
+}
+
 function openNecklaceDirect(product){
   currentNecklaceProduct=product;
   if(!currentNecklaceProduct)return;
+  // Reset to standard (Princess) selection
+  document.querySelectorAll('#necklaceModal .nk-length-row').forEach(function(r){r.classList.remove('nk-selected');});
+  var stdRow=document.querySelector('#necklaceModal .nk-length-row[data-len="standard"]');
+  if(stdRow)stdRow.classList.add('nk-selected');
   document.getElementById('necklaceNote').value='';
   document.getElementById('nkAddBtn').onclick=addNecklaceToCart;
   document.getElementById('necklaceModal').classList.add('show');
@@ -1661,6 +1681,9 @@ document.addEventListener('click',function(e){
   if(action==='varnecklace'&&pid){
     var vp=varProductStore[pid];
     if(vp){currentNecklaceProduct=vp;document.getElementById('necklaceNote').value='';
+      // Reset length row selection to standard
+      document.querySelectorAll('#necklaceModal .nk-length-row').forEach(function(r){r.classList.remove('nk-selected');});
+      var sr=document.querySelector('#necklaceModal .nk-length-row[data-len="standard"]');if(sr)sr.classList.add('nk-selected');
       document.getElementById('nkAddBtn').onclick=function(){
         var note=document.getElementById('necklaceNote').value.trim();
         closeNecklace();
