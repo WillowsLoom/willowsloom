@@ -1214,21 +1214,18 @@ function renderProducts(){
   var grid=document.getElementById('productsGrid');
   var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
   filtered=filtered.filter(function(p){
-    var dv=(p.variations||[]).filter(function(v){return !v._isBaseOption});
+    var dv=(p.variations||[]).filter(function(v){return v.name&&v.name.trim();});
     var qty=dv.length?dv.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     return qty>0;
   });
   var moonCard='';
   if(!filtered.length){grid.innerHTML='<div class="empty-shop" style="grid-column:1/-1"><p>\uD83C\uDF19 The collection is being woven...<br/><em>Check back soon</em></p></div>';return;}
   var cards=filtered.map(function(p){
-    // Strip the auto-injected base option — only show real user-created variations
-    var displayVars=(p.variations||[]).filter(function(v){return !v._isBaseOption&&v.name&&v.name.trim();});
+    // Show variations exactly as stored — A, B, C in order
+    var displayVars=(p.variations||[]).filter(function(v){return v.name&&v.name.trim();});
     var hasVars=displayVars.length>0;
-    // Qty: use displayVars if available, else p.qty
     var qty=hasVars?displayVars.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     var isLow=qty>0&&qty<=5;
-
-    // Image: use first display variation's photos, or base product photos
     var varPhotos=hasVars&&displayVars[0]&&displayVars[0].photos&&displayVars[0].photos.length?displayVars[0].photos:null;
     var photos=p.photos&&p.photos.length?p.photos:(varPhotos||[]);
     var imgHtml='';
@@ -1619,7 +1616,7 @@ function addBraceletToCart(){
   var p=currentSizingProduct;
   var pid=p.id;
   // Use displayVarStore if available (filtered, no _isBaseOption)
-  var vars=displayVarStore[pid]||(p.variations||[]).filter(function(v){return !v._isBaseOption&&v.name&&v.name.trim()});
+  var vars=displayVarStore[pid]||(p.variations||[]).filter(function(v){return v.name&&v.name.trim()});
   var selectedVar=vars.length?vars[selectedVarIdx]:null;
   var maxQty=selectedVar?(parseInt(selectedVar.qty)||0):(parseInt(p.qty)||0);
   var itemId=p.id+'-'+selectedSize+(selectedVar?'-v'+selectedVarIdx:'');
