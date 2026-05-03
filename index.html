@@ -666,9 +666,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       </div>
 
       <div class="sizing-custom">
-        <label id="sizingMeasureLabel" style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">My wrist measures (optional):</label>
-        <input type="number" id="wristInput" step="0.25" min="4" max="16" placeholder='e.g. 6.5"' style="width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:15px;border-radius:4px;outline:none;margin-bottom:10px;box-sizing:border-box;" oninput="autoSelectSize(this.value)"/>
-        <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Need a custom size or have a note?</label>
+        <label id="sizingMeasureLabel" style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Any notes or custom requests:</label>
         <textarea id="sizingNote" placeholder="e.g. Please make 8 inches total, my wrist is 7.75..." style="width:100%;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:14px;border-radius:4px;outline:none;min-height:68px;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
 
@@ -688,22 +686,20 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <div class="nk-title">✦ Necklace Length</div>
     <p class="nk-sub">All necklaces · Handwoven crochet cord</p>
     <div class="nk-yours">
-      <strong>✦ Willow's Loom necklaces:</strong><br/>
-      Toggle clasp styles are <strong>19.5 inches</strong> total length<br/>
-      Lobster clasp styles are just over <strong>19 inches</strong> total length<br/>
-      Both sit beautifully as a <strong>princess length</strong> — right at the collarbone
+      <strong>✦ Willow's Loom necklaces</strong> are made to a standard length.<br/>
+      If you'd like a different length, tap a size below and a note will be added to your order — or write your own message.
     </div>
-    <div style="margin-bottom:8px;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;">Standard necklace lengths for reference — tap to select:</div>
+    <div style="margin-bottom:8px;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;">Want a specific length? Tap one:</div>
     <div style="margin-bottom:16px;">
       <div class="nk-length-row" data-len="14.5" data-desc="Choker — 14.5 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">14.5"</div><div class="nk-length-desc">Choker — sits high on the neck</div></div></div>
       <div class="nk-length-row" data-len="16" data-desc="Collar — 16 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">16"</div><div class="nk-length-desc">Collar — rests at the base of the neck</div></div></div>
-      <div class="nk-length-row nk-selected" data-len="standard" data-desc="" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">18–20"</div><div class="nk-length-desc">Princess — sits at or just below the collarbone</div></div><span class="nk-length-badge">✦ Your piece</span></div>
+      <div class="nk-length-row" data-len="standard" data-desc="" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">18–20"</div><div class="nk-length-desc">Princess — standard length, sits at the collarbone</div></div></div>
       <div class="nk-length-row" data-len="22" data-desc="Matinee — 22 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">22–24"</div><div class="nk-length-desc">Matinee — falls between collarbone and bust</div></div></div>
       <div class="nk-length-row" data-len="30" data-desc="Opera — 30 inches" onclick="selectNecklaceLength(this)"><div class="nk-length-dot"></div><div class="nk-length-info"><div class="nk-length-in">28–36"</div><div class="nk-length-desc">Opera — drapes to the bust or below</div></div></div>
     </div>
     <div class="nk-custom">
-      <label>Need a different length? Leave a message:</label>
-      <textarea id="necklaceNote" placeholder="e.g. Could you make this 22 inches instead? My neck is longer and I prefer it to fall below my collarbone..."></textarea>
+      <label>Any notes or custom requests:</label>
+      <textarea id="necklaceNote" placeholder="e.g. Could you make this 22 inches? Or leave blank to order standard length."></textarea>
     </div>
     <button class="nk-add-btn" id="nkAddBtn">✦ Add to Bag ✦</button>
     <button class="nk-close-btn" onclick="closeNecklace()">✕ Close</button>
@@ -1173,6 +1169,7 @@ function filterProducts(cat,btn){
 
 // Global store for all variation products keyed by id
 var varProductStore={};
+var displayVarStore={}; // filtered variations (no _isBaseOption) per product id
 var selectedVarOpts={};
 
 function selectVarOpt(btn){
@@ -1190,7 +1187,8 @@ function selectVarOpt(btn){
   if(imgWrap){
     var p=varProductStore[pid];
     if(p){
-      var v=p.variations[vi];
+      var dvars=displayVarStore[pid]||[];
+      var v=dvars[vi];
       var photos=(v&&v.photos&&v.photos.length)?v.photos:(p.photos||[]);
       if(photos.length===1){
         imgWrap.innerHTML='<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);">';
@@ -1216,18 +1214,23 @@ function renderProducts(){
   var grid=document.getElementById('productsGrid');
   var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
   filtered=filtered.filter(function(p){
-    var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
+    var dv=(p.variations||[]).filter(function(v){return !v._isBaseOption});
+    var qty=dv.length?dv.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     return qty>0;
   });
   var moonCard='';
   if(!filtered.length){grid.innerHTML='<div class="empty-shop" style="grid-column:1/-1"><p>\uD83C\uDF19 The collection is being woven...<br/><em>Check back soon</em></p></div>';return;}
   var cards=filtered.map(function(p){
-    var qty=p.variations&&p.variations.length?p.variations.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
+    // Strip the auto-injected base option — only show real user-created variations
+    var displayVars=(p.variations||[]).filter(function(v){return !v._isBaseOption&&v.name&&v.name.trim();});
+    var hasVars=displayVars.length>0;
+    // Qty: use displayVars if available, else p.qty
+    var qty=hasVars?displayVars.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     var isLow=qty>0&&qty<=5;
-    var hasVars=p.variations&&p.variations.length>0&&p.variations.some(function(v){return v.name&&v.name.trim()});
 
-    // Image / Carousel — Option A (base product) is default, so use base product photos first
-    var photos=p.photos&&p.photos.length?p.photos:(hasVars&&p.variations[0]&&p.variations[0].photos?p.variations[0].photos:[]);
+    // Image: use first display variation's photos, or base product photos
+    var varPhotos=hasVars&&displayVars[0]&&displayVars[0].photos&&displayVars[0].photos.length?displayVars[0].photos:null;
+    var photos=p.photos&&p.photos.length?p.photos:(varPhotos||[]);
     var imgHtml='';
     if(photos.length===0){
       var em=p.category==='Necklaces'?'📿':p.category==='Rings'?'💍':p.category==='Bracelets'?'📿':p.category==='Earrings'?'✨':'💎';
@@ -1252,10 +1255,9 @@ function renderProducts(){
     }
 
     var priceDisplay='';
-    if(p.variations&&p.variations.length){
-      var varPrices=p.variations.filter(function(v){return parseFloat(v.price)>0}).map(function(v){return parseFloat(v.price)});
-      if(varPrices.length>0){priceDisplay='From $'+Math.min.apply(null,varPrices).toFixed(2);}
-      else{priceDisplay='$'+(parseFloat(p.price)||0).toFixed(2);}
+    if(hasVars){
+      var varPrices=displayVars.filter(function(v){return parseFloat(v.price)>0}).map(function(v){return parseFloat(v.price)});
+      priceDisplay=varPrices.length>0?'From $'+Math.min.apply(null,varPrices).toFixed(2):'$'+(parseFloat(p.price)||0).toFixed(2);
     }else{priceDisplay='$'+(parseFloat(p.price)||0).toFixed(2);}
     var addBtn='';
     var cat=(p.category||'').toLowerCase();
@@ -1263,14 +1265,13 @@ function renderProducts(){
     var isAnklet=cat==='anklets'||cat==='anklet';
     var isNecklace=cat==='necklaces'||cat==='necklace';
     var needsSizing=isBracelet||isAnklet;
+    // Store full product for lookup (always, for modal routing)
+    varProductStore[p.id]=p;
     if(hasVars){
-      // Store full product for later lookup
-      varProductStore[p.id]=p;
-      // Reset selection to first available variation on each render
+      displayVarStore[p.id]=displayVars;
       if(!selectedVarOpts.hasOwnProperty(p.id))selectedVarOpts[p.id]=0;
-      // Variations are labeled A, B, C... matching their index in variations[]
       var letters=['A','B','C','D','E','F','G'];
-      var optBtns=p.variations.map(function(v,vi){
+      var optBtns=displayVars.map(function(v,vi){
         var vqty=parseInt(v.qty)||0;
         var vprice=parseFloat(v.price)||parseFloat(p.price)||0;
         var letter=letters[vi]||String(vi+1);
@@ -1291,8 +1292,6 @@ function renderProducts(){
           ?'<button class="btn-add" data-action="varsizing" data-pid="'+p.id+'">📏 Choose Size ✦</button>'
           :'<button class="btn-add" data-action="varadd" data-pid="'+p.id+'">✦ Add to Bag ✦</button>');
     }else{
-      // No variations — route to correct modal using pid lookup (avoids JSON embedding bugs)
-      varProductStore[p.id]=p;
       if(isNecklace){
         addBtn='<button class="btn-add" data-action="necklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>';
       }else if(needsSizing){
@@ -1574,7 +1573,6 @@ function openSizingDirect(product){
     r.classList.toggle('sizing-selected',r.getAttribute('data-size')==='M');
   });
   document.getElementById('sizingNote').value='';
-  document.getElementById('wristInput').value='';
   document.getElementById('sizingModal').classList.add('show');
   document.body.style.overflow='hidden';
 }
@@ -1619,21 +1617,23 @@ function selectSize(btn){
 function addBraceletToCart(){
   if(!currentSizingProduct)return;
   var p=currentSizingProduct;
-  var vars=(p.variations||[]).filter(function(v){return v.name&&v.name.trim()});
+  var pid=p.id;
+  // Use displayVarStore if available (filtered, no _isBaseOption)
+  var vars=displayVarStore[pid]||(p.variations||[]).filter(function(v){return !v._isBaseOption&&v.name&&v.name.trim()});
   var selectedVar=vars.length?vars[selectedVarIdx]:null;
-  var maxQty=selectedVar?(parseInt(selectedVar.qty)||0):(parseInt(p.qty)||getInventoryQty(p.id,null)||0);
+  var maxQty=selectedVar?(parseInt(selectedVar.qty)||0):(parseInt(p.qty)||0);
   var itemId=p.id+'-'+selectedSize+(selectedVar?'-v'+selectedVarIdx:'');
   var existing=cart.find(function(c){return c.id===itemId});
   var currentInCart=existing?(existing.qty||1):0;
   if(currentInCart>=maxQty){notify('✦ Sorry — only '+maxQty+' available!');return;}
   var note=document.getElementById('sizingNote').value.trim();
-  var sizeLabels={S:'6.5"',M:'7"',L:'7.5"'};
+  var sizeLabels=currentSizingType==='anklet'?{S:'9"',M:'9.5"',L:'10"',XL:'10.5"'}:{S:'6.5"',M:'7"',L:'7.5"'};
   var letter=selectedVar?(' — Option '+String.fromCharCode(65+selectedVarIdx)+' ('+selectedVar.name+')'):'' ;
   var price=selectedVar&&parseFloat(selectedVar.price)?parseFloat(selectedVar.price):parseFloat(p.price)||0;
   var photo=selectedVar&&selectedVar.photos&&selectedVar.photos.length?selectedVar.photos[0]:p.photos&&p.photos.length?p.photos[0]:null;
   var item={
     id:itemId,
-    name:p.name+letter+' — Size '+selectedSize+' ('+sizeLabels[selectedSize]+')'+(note?' · '+note:''),
+    name:p.name+letter+' — Size '+selectedSize+' ('+(sizeLabels[selectedSize]||selectedSize)+')'+(note?' · '+note:''),
     price:price,photo:photo,qty:1,sku:p.sku||''
   };
   if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
@@ -1684,10 +1684,8 @@ function selectNecklaceLength(row){
 function openNecklaceDirect(product){
   currentNecklaceProduct=product;
   if(!currentNecklaceProduct)return;
-  // Reset to standard (Princess) selection
+  // Clear all selections — no length pre-selected, customer chooses or leaves blank
   document.querySelectorAll('#necklaceModal .nk-length-row').forEach(function(r){r.classList.remove('nk-selected');});
-  var stdRow=document.querySelector('#necklaceModal .nk-length-row[data-len="standard"]');
-  if(stdRow)stdRow.classList.add('nk-selected');
   document.getElementById('necklaceNote').value='';
   document.getElementById('nkAddBtn').onclick=addNecklaceToCart;
   document.getElementById('necklaceModal').classList.add('show');
@@ -1722,7 +1720,8 @@ document.getElementById('necklaceModal').addEventListener('click',function(e){if
 function addVarToCart(pid){
   var p=varProductStore[pid];if(!p)return;
   var vi=selectedVarOpts[pid]||0;
-  var v=p.variations[vi];if(!v)return;
+  var dvars=displayVarStore[pid]||[];
+  var v=dvars[vi];if(!v)return;
   var qty=parseInt(v.qty)||0;
   var itemId=p.id+'-v'+vi;
   var existing=cart.find(function(c){return c.id===itemId});
@@ -1745,21 +1744,21 @@ document.addEventListener('click',function(e){
   if(action==='varnecklace'&&pid){
     var vp=varProductStore[pid];
     if(vp){currentNecklaceProduct=vp;document.getElementById('necklaceNote').value='';
-      // Reset length row selection to standard
+      // Clear all length row selections
       document.querySelectorAll('#necklaceModal .nk-length-row').forEach(function(r){r.classList.remove('nk-selected');});
-      var sr=document.querySelector('#necklaceModal .nk-length-row[data-len="standard"]');if(sr)sr.classList.add('nk-selected');
       document.getElementById('nkAddBtn').onclick=function(){
         var note=document.getElementById('necklaceNote').value.trim();
         closeNecklace();
         var vi=selectedVarOpts[pid]||0;
-        var v=vp.variations[vi];
+        var dvars=displayVarStore[pid]||[];
+        var v=dvars[vi];
         var qty=parseInt(v?v.qty:vp.qty)||0;
         var itemId=vp.id+'-v'+vi+(note?'-c':'');
         var existing=cart.find(function(c){return c.id===itemId});
         var inCart=existing?(existing.qty||1):0;
         if(inCart>=qty){notify('✦ Sorry — only '+qty+' available!');return;}
         var photo=(v&&v.photos&&v.photos.length)?v.photos[0]:(vp.photos&&vp.photos.length?vp.photos[0]:null);
-        var item={id:itemId,name:vp.name+' — '+(v?v.name:'')+(note?' · '+note:''),price:parseFloat(v?v.price:vp.price)||0,photo:photo,qty:1};
+        var item={id:itemId,name:vp.name+(v?' — '+v.name:'')+(note?' · '+note:''),price:parseFloat(v?v.price:vp.price)||0,photo:photo,qty:1};
         if(existing){existing.qty=(existing.qty||1)+1}else{cart.push(item)}
         renderCart();notify('✦ Added to bag!'+(note?' Custom length noted!':''));
       };
@@ -1773,11 +1772,12 @@ document.addEventListener('click',function(e){
     if(vsp){
       varProductStore[pid]=vsp;
       var vi2=selectedVarOpts[pid]||0;
-      var vs=vsp.variations&&vsp.variations[vi2];
+      var dvars2=displayVarStore[pid]||[];
+      var vs=dvars2[vi2];
       var merged=Object.assign({},vsp,{
         price:vs&&vs.price?vs.price:vsp.price,
         qty:vs&&vs.qty?vs.qty:vsp.qty,
-        variations:vsp.variations||[]
+        variations:dvars2
       });
       openSizingDirect(merged);
     }
