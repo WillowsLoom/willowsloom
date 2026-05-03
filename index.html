@@ -1291,14 +1291,14 @@ function renderProducts(){
           ?'<button class="btn-add" data-action="varsizing" data-pid="'+p.id+'">📏 Choose Size ✦</button>'
           :'<button class="btn-add" data-action="varadd" data-pid="'+p.id+'">✦ Add to Bag ✦</button>');
     }else{
-      // No variations — still route to correct modal for necklaces/bracelets/anklets
-      var pj=JSON.stringify(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      // No variations — route to correct modal using pid lookup (avoids JSON embedding bugs)
+      varProductStore[p.id]=p;
       if(isNecklace){
-        addBtn='<button class="btn-add" data-action="necklace" data-p=\''+pj+'\'>✦ Add to Bag ✦</button>';
+        addBtn='<button class="btn-add" data-action="necklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>';
       }else if(needsSizing){
-        addBtn='<button class="btn-add" data-action="sizing" data-p=\''+pj+'\'>📏 Choose Size ✦</button>';
+        addBtn='<button class="btn-add" data-action="sizing" data-pid="'+p.id+'">📏 Choose Size ✦</button>';
       }else{
-        addBtn='<button class="btn-add" onclick=\'addToCart('+pj+',null)\'>✦ Add to Bag ✦</button>';
+        addBtn='<button class="btn-add" data-action="addplain" data-pid="'+p.id+'">✦ Add to Bag ✦</button>';
       }
     }
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
@@ -1740,7 +1740,6 @@ document.addEventListener('click',function(e){
   if(!btn)return;
   var action=btn.getAttribute('data-action');
   var pid=btn.getAttribute('data-pid');
-  var raw=btn.getAttribute('data-p');
   // Variation actions use pid lookup
   if(action==='varadd'&&pid){addVarToCart(pid);return;}
   if(action==='varnecklace'&&pid){
@@ -1784,7 +1783,16 @@ document.addEventListener('click',function(e){
     }
     return;
   }
-  // Regular actions use data-p
+  // Non-variation actions — look up product by pid
+  if(pid){
+    var pp=varProductStore[pid]||products.find(function(x){return x.id===pid});
+    if(!pp)return;
+    if(action==='sizing'){openSizingDirect(pp);return;}
+    if(action==='necklace'){openNecklaceDirect(pp);return;}
+    if(action==='addplain'){addToCart(pp,null);return;}
+  }
+  // Legacy fallback: data-p JSON (kept for any old cached HTML)
+  var raw=btn.getAttribute('data-p');
   if(!raw)return;
   try{
     var p=JSON.parse(raw.replace(/&quot;/g,'"'));
