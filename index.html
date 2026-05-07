@@ -804,6 +804,27 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   </div>
 </div>
 
+<!-- Return Policy -->
+<section id="returns" style="background:linear-gradient(180deg,var(--deep),var(--midnight),var(--deep));">
+  <div class="section-title">Return Policy</div>
+  <div class="divider"></div>
+  <div style="max-width:700px;margin:0 auto;">
+    <div style="background:linear-gradient(135deg,rgba(45,27,78,0.4),rgba(107,63,160,0.15));border:1px solid var(--plum);border-radius:8px;padding:32px 28px;">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--stardust);line-height:1.9;margin-bottom:20px;">We want you to love your Willow's Loom piece. If for any reason you're not completely satisfied, we accept returns within <em style="color:var(--gold-light);font-style:normal;">14 days of delivery</em>.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--stardust);line-height:1.9;margin-bottom:20px;">To be eligible for a return, items must be <em style="color:var(--gold-light);font-style:normal;">unworn, undamaged, and in their original condition</em>. Because each piece is handmade, we inspect all returns carefully.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--stardust);line-height:1.9;margin-bottom:20px;">To start a return, contact us through the form below with your order details and reason for return. Once your return is received and approved, a refund will be issued to your original payment method within <em style="color:var(--gold-light);font-style:normal;">5–7 business days</em>.</p>
+      <div style="border-top:1px solid var(--plum);padding-top:20px;margin-top:4px;">
+        <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--lavender);letter-spacing:2px;margin-bottom:12px;">PLEASE NOTE</div>
+        <ul style="font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--stardust);line-height:2;padding-left:20px;">
+          <li>Shipping costs are non-refundable</li>
+          <li>Customer is responsible for return shipping</li>
+          <li>We do not accept returns on items showing signs of wear, damage, or alteration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer>
   <div class="footer-logo">Willow's Loom Jewelry</div>
@@ -1173,6 +1194,38 @@ var varProductStore={};
 var displayVarStore={}; // filtered variations (no _isBaseOption) per product id
 var selectedVarOpts={};
 
+function selectVarOptDrop(sel){
+  var pid=sel.getAttribute('data-pid');
+  var vi=parseInt(sel.value)||0;
+  selectedVarOpts[pid]=vi;
+  // Swap image same as before
+  var imgWrap=document.getElementById('pimg-'+pid);
+  if(imgWrap){
+    var p=varProductStore[pid];
+    if(p){
+      var dvars=displayVarStore[pid]||[];
+      var v=dvars[vi];
+      var photos=(v&&v.photos&&v.photos.length)?v.photos:(p.photos||[]);
+      if(photos.length===1){
+        imgWrap.innerHTML='<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--midnight);">';
+      } else if(photos.length>1){
+        var cid='cv'+pid.replace(/[^a-zA-Z0-9]/g,'').slice(0,12)+vi;
+        var slides='';var dots='';var n=photos.length;
+        for(var ci=0;ci<n;ci++){
+          slides+='<div style="width:'+(100/n).toFixed(4)+'%;height:100%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--midnight);"><img src="'+photos[ci]+'" style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;"></div>';
+          dots+='<span data-cid="'+cid+'" data-ci="'+ci+'" style="display:inline-block;width:7px;height:7px;border-radius:50%;cursor:pointer;margin:0 2px;background:'+(ci===0?'var(--gold)':'rgba(255,255,255,0.3)')+';transition:background 0.2s;"></span>';
+        }
+        imgWrap.innerHTML='<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:var(--midnight);">'
+          +'<div id="'+cid+'" data-ci="0" style="display:flex;width:'+(n*100)+'%;height:100%;transition:transform 0.32s ease;">'+slides+'</div>'
+          +'<button data-cid="'+cid+'" data-cd="-1" style="position:absolute;left:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;line-height:1;">&#8249;</button>'
+          +'<button data-cid="'+cid+'" data-cd="1" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);background:rgba(13,6,24,0.8);border:1px solid rgba(167,139,202,0.5);color:#a78bca;width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;z-index:4;display:flex;align-items:center;justify-content:center;line-height:1;">&#8250;</button>'
+          +'<div id="'+cid+'d" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;z-index:4;">'+dots+'</div>'
+          +'</div>';
+      }
+    }
+  }
+}
+
 function selectVarOpt(btn){
   var pid=btn.getAttribute('data-pid');
   var vi=parseInt(btn.getAttribute('data-vi'))||0;
@@ -1272,22 +1325,18 @@ function renderProducts(){
     if(hasVars){
       displayVarStore[p.id]=displayVars;
       if(!selectedVarOpts.hasOwnProperty(p.id))selectedVarOpts[p.id]=0;
-      var letters=['A','B','C','D','E','F','G'];
-      var optBtns=displayVars.map(function(v,vi){
+      var optItems=displayVars.map(function(v,vi){
         var vqty=parseInt(v.qty)||0;
         var vprice=parseFloat(v.price)||parseFloat(p.price)||0;
-        var letter=letters[vi]||String(vi+1);
-        return '<button class="moon-opt var-opt'+(vi===0?' moon-opt-active':'')+'" '
-          +'data-pid="'+p.id+'" data-vi="'+vi+'" '
-          +(vqty<=0?'disabled ':' ')
-          +'onclick="selectVarOpt(this)">'
-          +'<span class="moon-opt-letter">'+letter+'</span>'
-          +'<span class="moon-opt-desc">'+(v.name||'Option '+letter)+'</span>'
-          +'<span class="moon-opt-price">$'+vprice.toFixed(2)+'</span>'
-          +(vqty<=0?'<span class="moon-opt-sold">Sold Out</span>':vqty<=5?'<span style="font-size:10px;color:'+(vqty===1?'#f87171':vqty<=3?'#fbbf24':'#a78bfa')+';margin-left:4px;">'+vqty+' left</span>':'')
-          +'</button>';
+        var label=(v.name||'Option '+(vi+1))+' — $'+vprice.toFixed(2)+(vqty<=0?' (Sold Out)':vqty<=5?' ('+vqty+' left)':'');
+        return '<option value="'+vi+'"'+(vqty<=0?' disabled':'')+'>'+label+'</option>';
       }).join('');
-      addBtn='<div class="moon-options var-options" id="varopts-'+p.id+'">'+optBtns+'</div>'
+      addBtn='<div class="moon-options var-options" id="varopts-'+p.id+'">'
+        +'<select class="var-select" data-pid="'+p.id+'" onchange="selectVarOptDrop(this)" '
+        +'style="width:100%;background:rgba(45,27,78,0.5);border:1px solid var(--plum);color:var(--white);padding:9px 12px;font-family:\'Cormorant Garamond\',serif;font-size:13px;border-radius:4px;outline:none;cursor:pointer;margin-bottom:10px;appearance:auto;">'
+        +optItems
+        +'</select>'
+        +'</div>'
         +(isNecklace
           ?'<button class="btn-add" data-action="varnecklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>'
           :needsSizing
@@ -1322,9 +1371,9 @@ function renderProducts(){
 // ── FAQ ────────────────────────────────────────────────────────
 var faqs=[
   {q:'How long does shipping take?',a:'Most orders ship within 3–5 business days. Once shipped, delivery typically takes 3–7 days depending on your location.'},
-  {q:'Do you accept custom orders?',a:'Absolutely! I love creating custom pieces. Reach out through the contact form or DM me on social media. Custom orders typically take 1–2 weeks.'},
+  {q:'Do you accept custom orders?',a:'At this time I do not accept custom orders — all pieces are ready-made and available in the shop. Each one is handcrafted and one of a kind!'},
   {q:'What materials do you use?',a:'I work with resin, stainless steel, copper, wire, gemstones, crystals, and more. Each listing describes the specific materials used.'},
-  {q:"What is your return policy?",a:"Due to the handmade nature of my pieces, I don't accept returns unless an item arrives damaged. Please reach out within 7 days if there's an issue and I'll make it right."},
+  {q:"What is your return policy?",a:"We accept returns within 14 days of delivery on unworn, undamaged items. Shipping costs are non-refundable and the customer covers return shipping. See our full Return Policy section for details."},
   {q:'Do you ship internationally?',a:'Currently I ship within the United States. International shipping may be available — just reach out and I\'ll see what I can do!'},
   {q:'How do I care for my jewelry?',a:'Keep away from water, perfume, and harsh chemicals. Store in a cool dry place. For resin pieces, avoid prolonged sun exposure to preserve color.'}
 ];
