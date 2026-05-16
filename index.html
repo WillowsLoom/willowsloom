@@ -729,7 +729,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
           🏡 Local Pickup<br/><span style="font-size:11px;color:var(--stardust);letter-spacing:0;">FREE · Allentown PA</span>
         </button>
         <button id="btnShip" onclick="setDelivery('ship')" style="flex:1;padding:12px 8px;border-radius:8px;border:2px solid var(--plum);background:transparent;color:var(--lavender);font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;">
-          📦 Ship to Me<br/><span style="font-size:11px;letter-spacing:0;" id="shipCostLabel">$5.99</span>
+          📦 Ship to Me<br/><span style="font-size:11px;letter-spacing:0;" id="shipCostLabel">$5.99 (FREE over $35)</span>
         </button>
       </div>
 
@@ -944,13 +944,13 @@ function closeStripeCheckout(){
   document.getElementById('stripeFormWrap').style.display='block';
   document.getElementById('stripeSuccess').style.display='none';
   document.getElementById('stripeError').style.display='none';
-  deliveryMode='pickup';
+  deliveryMode='ship';
   var btn=document.getElementById('stripePayBtn');
   if(btn){btn.disabled=false;btn.textContent='✦ Pay Now ✦';}
 }
 
 // ── Delivery mode ─────────────────────────────────────────────
-var deliveryMode='pickup';
+var deliveryMode='ship';
 
 function setDelivery(mode){
   deliveryMode=mode;
@@ -990,7 +990,7 @@ function updateOrderTotal(){
 }
 
 async function initStripeForm(){
-  setDelivery('pickup');
+  setDelivery('ship');
 
   if(!stripeInstance){
     await loadStripeJs();
@@ -1005,11 +1005,15 @@ async function initStripeForm(){
 
     var grandTotal=updateOrderTotal();
 
+    // Recalculate to ensure shipping is included
+    var cartTotal=cart.reduce(function(s,c){return s+(c.price*(c.qty||1))},0);
+    var shippingCharge=(deliveryMode==='pickup')?0:(cartTotal>=35?0:5.99);
+    var finalTotal=cartTotal+shippingCharge;
     var resp=await fetch('/.netlify/functions/create-payment-intent',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        amount:Math.round(grandTotal*100),
+        amount:Math.round(finalTotal*100),
         currency:'usd',
         cart:cart.map(function(c){return{name:c.name,price:c.price,qty:c.qty||1,sku:c.sku||'N/A'};})
       })
