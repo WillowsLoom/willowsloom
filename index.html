@@ -113,7 +113,7 @@ section{position:relative;z-index:1;padding:80px 24px}
 .empty-shop{text-align:center;padding:60px 20px;color:var(--lavender);font-style:italic;font-size:18px}
 
 /* Cart */
-.cart-icon{position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,var(--violet),var(--plum));border:1px solid var(--lavender);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;box-shadow:0 4px 20px rgba(107,63,160,0.5);transition:transform 0.3s;transform:translateZ(0);-webkit-transform:translateZ(0);will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.cart-icon{position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,var(--violet),var(--plum));border:1px solid var(--lavender);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10000;box-shadow:0 4px 20px rgba(107,63,160,0.5);transition:transform 0.3s;transform:translateZ(0);-webkit-transform:translateZ(0);will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .cart-icon:hover{transform:scale(1.1)}
 .cart-count{position:absolute;top:-4px;right:-4px;background:var(--gold);color:var(--deep);border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif}
 .cart-drawer{position:fixed;right:-400px;top:0;bottom:0;width:380px;background:var(--midnight);border-left:1px solid var(--plum);z-index:300;transition:right 0.4s ease;padding:24px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,0.5)}
@@ -412,7 +412,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     width:62px;
     height:62px;
     box-shadow:0 4px 24px rgba(107,63,160,0.7);
-    z-index:9999;
+    z-index:10000;
   }
   .cart-icon svg{
     width:26px;
@@ -469,20 +469,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   <a href="https://www.facebook.com/profile.php?id=61570865845574" target="_blank">Facebook</a>
 </div>
 
-<!-- Cart Icon -->
-<div class="cart-icon" onclick="toggleCart()">
-  🛒
-  <span class="cart-count" id="cartCount">0</span>
-</div>
 
-<!-- Cart Drawer -->
-<div class="cart-drawer" id="cartDrawer">
-  <div class="cart-header">
-    <span class="cart-title">Your Bag</span>
-    <button class="cart-close" onclick="closeCart()">✕</button>
-  </div>
-  <div id="cartItems"></div>
-</div>
 
 <!-- Easter Egg Hangman -->
 <div id="easterEgg">
@@ -925,8 +912,10 @@ function addToCart(product,variation){
 function removeFromCart(id){cart=cart.filter(function(c){return c.id!==id});renderCart()}
 function renderCart(){
   var count=cart.reduce(function(s,c){return s+(c.qty||1)},0);
-  document.getElementById('cartCount').textContent=count;
+  var cc=document.getElementById('cartCount');
+  if(cc)cc.textContent=count;
   var el=document.getElementById('cartItems');
+  if(!el)return;
   if(!cart.length){el.innerHTML='<div class="cart-empty">Your bag is empty ✦<br/><br/><em>Add something magical</em></div>';return}
   var total=cart.reduce(function(s,c){return s+(c.price*(c.qty||1))},0);
   var html=cart.map(function(c){
@@ -1867,5 +1856,20 @@ document.addEventListener('click',function(e){
 loadProducts();
 renderCart();
 </script>
+
+<!-- Cart Icon -->
+<div class="cart-icon" onclick="toggleCart()">
+  🛒
+  <span class="cart-count" id="cartCount">0</span>
+</div>
+
+<!-- Cart Drawer -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <span class="cart-title">Your Bag</span>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div id="cartItems"></div>
+</div>
 </body>
 </html>
