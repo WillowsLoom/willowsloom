@@ -113,7 +113,7 @@ section{position:relative;z-index:1;padding:80px 24px}
 .empty-shop{text-align:center;padding:60px 20px;color:var(--lavender);font-style:italic;font-size:18px}
 
 /* Cart */
-.cart-icon{position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,var(--violet),var(--plum));border:1px solid var(--lavender);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;box-shadow:0 4px 20px rgba(107,63,160,0.5);transition:transform 0.3s}
+.cart-icon{position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,var(--violet),var(--plum));border:1px solid var(--lavender);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;box-shadow:0 4px 20px rgba(107,63,160,0.5);transition:transform 0.3s;transform:translateZ(0);-webkit-transform:translateZ(0);will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .cart-icon:hover{transform:scale(1.1)}
 .cart-count{position:absolute;top:-4px;right:-4px;background:var(--gold);color:var(--deep);border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif}
 .cart-drawer{position:fixed;right:-400px;top:0;bottom:0;width:380px;background:var(--midnight);border-left:1px solid var(--plum);z-index:300;transition:right 0.4s ease;padding:24px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,0.5)}
@@ -403,6 +403,21 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   .btn-add{font-size:11px;letter-spacing:0.5px}
   .hero-logo{width:150px;height:150px}
   .filter-btn{padding:5px 10px;font-size:11px}
+}
+
+@media(max-width:768px){
+  .cart-icon{
+    bottom:20px;
+    right:16px;
+    width:62px;
+    height:62px;
+    box-shadow:0 4px 24px rgba(107,63,160,0.7);
+    z-index:9999;
+  }
+  .cart-icon svg{
+    width:26px;
+    height:26px;
+  }
 }
 </style>
 </head>
