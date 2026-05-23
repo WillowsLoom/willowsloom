@@ -475,6 +475,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#socials">Socials</a></li>
+    <li><a href="#build-your-own" style="color:var(--gold);font-weight:700;border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:4px 12px;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='none'">✦ Build Yours</a></li>
   </ul>
   <div class="nav-social">
     <a href="https://www.tiktok.com/@willowsloom" target="_blank">TikTok ✦</a>
@@ -585,13 +586,27 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- Build Your Own -->
-<section id="build-your-own" style="padding:80px 0;background:linear-gradient(180deg,var(--deep) 0%,rgba(13,6,24,0.95) 100%);">
-  <div class="container">
-    <div style="text-align:center;margin-bottom:48px;">
-      <p class="section-tag">✦ custom made for you ✦</p>
-      <h2 class="section-title">Build Your Own</h2>
-      <p style="color:var(--lavender);font-size:15px;max-width:500px;margin:0 auto;line-height:1.8;">Every piece is handmade with a bead spinner. Pick your piece, your colors, and your size — I'll spin it just for you.</p>
+<section id="build-your-own" style="padding:0 0 80px;background:var(--deep);position:relative;overflow:hidden;">
+  <!-- Decorative background glow -->
+  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(107,63,160,0.2) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <!-- Hero Banner -->
+  <div style="background:linear-gradient(135deg,rgba(107,63,160,0.4),rgba(45,27,78,0.8));border-bottom:1px solid rgba(201,168,76,0.3);padding:60px 24px;text-align:center;margin-bottom:48px;position:relative;">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><circle cx=%2250%22 cy=%2250%22 r=%221%22 fill=%22rgba(201,168,76,0.3)%22/></svg>') repeat;opacity:0.4;pointer-events:none;"></div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--gold);letter-spacing:6px;text-transform:uppercase;margin-bottom:12px;">✦ handspun with intention ✦</p>
+    <h2 style="font-family:'Cinzel Decorative',serif;font-size:clamp(28px,6vw,52px);color:var(--white);margin-bottom:16px;line-height:1.2;">Build Your Own<br/><span style="color:var(--gold);">Bead Creation</span></h2>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--lavender);max-width:520px;margin:0 auto 24px;line-height:1.8;font-style:italic;">Every piece is spun by hand with a bead spinner — you pick the colors, I spin them into something made just for you.</p>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Waist Beads</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Bracelets</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Necklaces</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Anklets</div>
     </div>
+    <a href="#build-your-own" onclick="document.querySelector('.byo-pieces').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-block;margin-top:24px;background:linear-gradient(135deg,var(--gold),#8a6820);color:var(--deep);font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;padding:12px 28px;border-radius:4px;text-decoration:none;cursor:pointer;">Start Building ✦</a>
+  </div>
+
+  <div class="container">
+    <div style="max-width:680px;margin:0 auto;">
 
     <div style="max-width:680px;margin:0 auto;">
 
@@ -600,37 +615,37 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
         <div class="byo-step-title"><span class="byo-num">1</span> Choose Your Piece</div>
         <div class="byo-pieces" id="byoPieces">
           <div class="byo-piece" data-type="waist" data-price="15" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">🌀</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST</div>
             <div class="bp-name">Waist Bead</div>
             <div class="bp-price">$15</div>
           </div>
           <div class="byo-piece" data-type="waist-bundle" data-price="20" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">🌀✦</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST +</div>
             <div class="bp-name">Waist Bead<br/>+ 2 Bracelets</div>
             <div class="bp-price">$20</div>
           </div>
           <div class="byo-piece" data-type="bracelet1" data-price="5" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">📿</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
             <div class="bp-name">1 Bracelet</div>
             <div class="bp-price">$5</div>
           </div>
           <div class="byo-piece" data-type="bracelet3" data-price="10" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">📿📿📿</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SET OF 3</div>
             <div class="bp-name">3 Bracelets</div>
             <div class="bp-price">$10</div>
           </div>
           <div class="byo-piece" data-type="necklace-single" data-price="10" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">💎</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
             <div class="bp-name">Single Strand<br/>Necklace</div>
             <div class="bp-price">$10</div>
           </div>
           <div class="byo-piece" data-type="necklace-double" data-price="15" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">💎💎</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">DOUBLE</div>
             <div class="bp-name">Double Stack<br/>Necklace</div>
             <div class="bp-price">$15</div>
           </div>
           <div class="byo-piece" data-type="anklet" data-price="5" onclick="selectByoPiece(this)">
-            <div class="bp-emoji">🦶</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">ANKLET</div>
             <div class="bp-name">Anklet</div>
             <div class="bp-price">$5</div>
           </div>
