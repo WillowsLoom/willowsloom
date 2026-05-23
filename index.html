@@ -420,6 +420,48 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   }
 }
 
+/* ── BYO Sticky Banner ──────────────────────────────────── */
+#byoBanner{
+  display:none;
+  background:linear-gradient(135deg,var(--gold),#a07828);
+  color:var(--deep);
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:102;
+}
+#byoBanner a{
+  display:block;
+  width:100%;
+  padding:13px 24px;
+  font-family:'Cinzel Decorative',serif;
+  font-size:14px;
+  letter-spacing:2px;
+  color:var(--deep);
+  text-decoration:none;
+  font-weight:700;
+}
+@keyframes byoPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.5)}
+  50%{box-shadow:0 0 16px 4px rgba(201,168,76,0.35)}
+}
+@media(max-width:768px){
+  #byoBanner{display:block;animation:byoPulse 2.5s ease-in-out infinite;}
+  nav{top:84px !important;}
+  nav.ann-hidden{top:46px !important;}
+}
+.mobile-menu-byo{
+  font-family:'Cinzel Decorative',serif !important;
+  font-size:20px !important;
+  color:var(--gold) !important;
+  border:2px solid var(--gold) !important;
+  border-radius:8px;
+  padding:12px 32px !important;
+  margin-top:8px;
+  background:rgba(201,168,76,0.08);
+}
+.mobile-menu-byo:hover{background:rgba(201,168,76,0.18) !important;}
+
 /* ── BYO Inspiration Row ─────────────────────────────────── */
 .byo-inspo{padding:0 24px 48px;max-width:960px;margin:0 auto;}
 .byo-inspo-label{text-align:center;font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;opacity:0.8;}
@@ -443,8 +485,8 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 .byo-piece:hover{border-color:var(--lavender);transform:translateY(-2px);}
 .byo-piece.selected{border-color:var(--gold);background:rgba(201,168,76,0.1);}
 .bp-emoji{font-size:24px;margin-bottom:6px;}
-.bp-name{font-size:12px;color:var(--stardust);line-height:1.4;margin-bottom:4px;}
-.bp-price{font-size:13px;color:var(--gold);font-weight:700;}
+.bp-name{font-size:15px;color:var(--stardust);line-height:1.4;margin-bottom:4px;}
+.bp-price{font-size:16px;color:var(--gold);font-weight:700;}
 .byo-colors{display:flex;flex-wrap:wrap;gap:10px;}
 .byo-color{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;}
 .byo-color.selected .bc-swatch{box-shadow:0 0 0 3px var(--gold);}
@@ -475,6 +517,11 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 <div id="announcementBar">
   <span id="annText">✦ <em>Free shipping</em> on orders over $35 — handcrafted with love ✦</span>
   <button class="ann-close" onclick="closeAnnouncement()" title="Close">✕</button>
+</div>
+
+<!-- Mobile-only: Build Your Own sticky banner -->
+<div id="byoBanner">
+  <a href="#build-your-own">✦ Build Your Own Bead Creation ✦</a>
 </div>
 
 <div class="notif" id="notif"></div>
@@ -509,6 +556,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   <a href="#faq" onclick="closeMobile()">FAQ</a>
   <a href="#contact" onclick="closeMobile()">Contact</a>
   <a href="#socials" onclick="closeMobile()">Socials</a>
+  <a href="#build-your-own" onclick="closeMobile()" class="mobile-menu-byo">✦ Build Your Own ✦</a>
   <a href="https://www.tiktok.com/@willowsloom" target="_blank">TikTok</a>
   <a href="https://www.facebook.com/profile.php?id=61570865845574" target="_blank">Facebook</a>
 </div>
@@ -616,7 +664,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Necklaces</div>
       <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--stardust);"><span style="color:var(--gold);">✦</span> Anklets</div>
     </div>
-    <a href="#build-your-own" onclick="document.querySelector('.byo-pieces').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-block;margin-top:24px;background:linear-gradient(135deg,var(--gold),#8a6820);color:var(--deep);font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;padding:12px 28px;border-radius:4px;text-decoration:none;cursor:pointer;">Start Building ✦</a>
+    <a href="#build-your-own" onclick="document.getElementById('byoStep1').scrollIntoView({behavior:'smooth',block:'start'});return false;" style="display:inline-block;margin-top:24px;background:linear-gradient(135deg,var(--gold),#8a6820);color:var(--deep);font-family:'Cinzel Decorative',serif;font-size:15px;letter-spacing:2px;padding:14px 32px;border-radius:4px;text-decoration:none;cursor:pointer;">Start Building ✦</a>
   </div>
 
   <!-- Inspiration Photo Row -->
@@ -624,10 +672,10 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <div class="byo-inspo-label">✦ a few finished pieces for inspiration ✦</div>
     <div class="byo-inspo-grid">
       <div class="byo-inspo-item">
-        <img src="IMG_3978_-_Edited.jpg" alt="Finished bead piece — pink, teal, and black necklace" loading="lazy"/>
+        <img src="IMG_3978%20-%20Edited.jpg" alt="Finished bead piece — pink, teal, and black necklace" loading="lazy"/>
       </div>
       <div class="byo-inspo-item">
-        <img src="Untitled_design.jpg" alt="Finished bead piece — blue and multicolor necklace" loading="lazy"/>
+        <img src="Untitled%20design.jpg" alt="Finished bead piece — blue and multicolor necklace" loading="lazy"/>
       </div>
       <div class="byo-inspo-item">
         <img src="IMG_3967.jpg" alt="Finished bead piece — purple millefiori necklace on tree stump" loading="lazy"/>
@@ -641,41 +689,41 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <div style="max-width:680px;margin:0 auto;">
 
       <!-- Step 1: Pick your piece -->
-      <div class="byo-step">
+      <div class="byo-step" id="byoStep1">
         <div class="byo-step-title"><span class="byo-num">1</span> Choose Your Piece</div>
         <div class="byo-pieces" id="byoPieces">
           <div class="byo-piece" data-type="waist" data-price="15" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST</div>
             <div class="bp-name">Waist Bead</div>
             <div class="bp-price">$15</div>
           </div>
           <div class="byo-piece" data-type="waist-bundle" data-price="20" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST +</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST +</div>
             <div class="bp-name">Waist Bead<br/>+ 2 Bracelets</div>
             <div class="bp-price">$20</div>
           </div>
           <div class="byo-piece" data-type="bracelet1" data-price="5" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
             <div class="bp-name">1 Bracelet</div>
             <div class="bp-price">$5</div>
           </div>
           <div class="byo-piece" data-type="bracelet3" data-price="10" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SET OF 3</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SET OF 3</div>
             <div class="bp-name">3 Bracelets</div>
             <div class="bp-price">$10</div>
           </div>
           <div class="byo-piece" data-type="necklace-single" data-price="10" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">SINGLE</div>
             <div class="bp-name">Single Strand<br/>Necklace</div>
             <div class="bp-price">$10</div>
           </div>
           <div class="byo-piece" data-type="necklace-double" data-price="15" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">DOUBLE</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">DOUBLE</div>
             <div class="bp-name">Double Stack<br/>Necklace</div>
             <div class="bp-price">$15</div>
           </div>
           <div class="byo-piece" data-type="anklet" data-price="5" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:3px 8px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">ANKLET</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">ANKLET</div>
             <div class="bp-name">Anklet</div>
             <div class="bp-price">$5</div>
           </div>
