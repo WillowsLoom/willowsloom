@@ -1000,7 +1000,19 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 
       <!-- Stripe Payment Element -->
       <div style="margin-bottom:18px;">
-        <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;margin-bottom:10px;">Payment Details</label>
+        <!-- Promo Code -->
+      <div style="margin-bottom:18px;">
+        <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;margin-bottom:8px;">Promo Code</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="promoInput" type="text" placeholder="Enter code" autocomplete="off"
+            style="flex:1;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-family:'Crimson Pro',serif;font-size:15px;border-radius:4px;outline:none;text-transform:uppercase;letter-spacing:2px;"
+            onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor=activePromo?'var(--teal)':'var(--plum)'"
+            oninput="this.value=this.value.toUpperCase()"/>
+          <button onclick="applyPromoCode()" style="background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--white);border:1px solid var(--lavender);padding:10px 18px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:4px;white-space:nowrap;">Apply</button>
+        </div>
+        <div id="promoMsg" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+      </div>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;margin-bottom:10px;">Payment Details</label>
         <div id="stripe-payment-element" style="min-height:48px;"></div>
       </div>
 
@@ -1170,6 +1182,9 @@ function openStripeCheckout(){
   initStripeForm();
 }
 function closeStripeCheckout(){
+  activePromo=null;
+  var pi=document.getElementById('promoInput');if(pi)pi.value='';
+  var pm=document.getElementById('promoMsg');if(pm)pm.textContent='';
   document.getElementById('stripeModal').style.display='none';
   document.body.style.overflow='';
   document.getElementById('stripeFormWrap').style.display='block';
@@ -1201,17 +1216,54 @@ function setDelivery(mode){
   updateOrderTotal();
 }
 
+function calcDiscount(subtotal){
+  if(!activePromo)return 0;
+  var p=PROMO_CODES[activePromo];
+  if(!p)return 0;
+  var disc=p.type==='percent'?(subtotal*(p.value/100)):p.value;
+  return Math.min(disc,subtotal); // never discount more than subtotal
+}
+
+function applyPromoCode(){
+  var code=(document.getElementById('promoInput').value||'').trim().toUpperCase();
+  var msg=document.getElementById('promoMsg');
+  var input=document.getElementById('promoInput');
+  if(!code){msg.style.color='#f87171';msg.textContent='Enter a code first.';return;}
+  if(PROMO_CODES[code]){
+    activePromo=code;
+    var p=PROMO_CODES[code];
+    msg.style.color='#4ade80';
+    msg.textContent='✓ Code applied — '+p.label+'!';
+    input.style.borderColor='var(--teal)';
+    updateOrderTotal();
+  } else {
+    activePromo=null;
+    msg.style.color='#f87171';
+    msg.textContent='Invalid code. Try again.';
+    input.style.borderColor='#f87171';
+    updateOrderTotal();
+  }
+}
+
 function updateOrderTotal(){
-  var total=cart.reduce(function(s,c){return s+(c.price*(c.qty||1))},0);
-  var shipping=(deliveryMode==='pickup')?0:(total>=35?0:5.99);
-  var grandTotal=total+shipping;
+  var subtotal=cart.reduce(function(s,c){return s+(c.price*(c.qty||1))},0);
+  var discount=calcDiscount(subtotal);
+  var discountedSubtotal=subtotal-discount;
+  var shipping=(deliveryMode==='pickup')?0:(discountedSubtotal>=35?0:5.99);
+  var grandTotal=discountedSubtotal+shipping;
   var sl=document.getElementById('shipCostLabel');
-  if(sl)sl.textContent=total>=35?'FREE on orders $35+':'$5.99';
+  if(sl)sl.textContent=discountedSubtotal>=35?'FREE on orders $35+':'$5.99';
   var itemsHtml=cart.map(function(c){
     return '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--stardust);padding:4px 0;">'+
       '<span style="flex:1;padding-right:8px;">'+c.name+' × '+(c.qty||1)+'</span>'+
       '<span style="color:var(--gold);white-space:nowrap;">$'+(c.price*(c.qty||1)).toFixed(2)+'</span></div>';
   }).join('');
+  if(discount>0){
+    var p=PROMO_CODES[activePromo];
+    itemsHtml+='<div style="display:flex;justify-content:space-between;font-size:13px;color:#4ade80;padding:4px 0;">'+
+      '<span>✓ Promo: '+activePromo+' ('+p.label+')</span>'+
+      '<span>-$'+discount.toFixed(2)+'</span></div>';
+  }
   var shipLabel=deliveryMode==='pickup'?'<span style="color:var(--teal);">FREE · Local Pickup ✦</span>':(shipping===0?'<span style="color:var(--teal);">FREE ✦</span>':'$'+shipping.toFixed(2));
   itemsHtml+='<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--lavender);padding:4px 0;margin-top:4px;">'+
     '<span>'+(deliveryMode==='pickup'?'Pickup':'Shipping')+'</span><span>'+shipLabel+'</span></div>';
@@ -1234,12 +1286,8 @@ async function initStripeForm(){
     btn.textContent='⟳ Loading...';
     btn.disabled=true;
 
-    var grandTotal=updateOrderTotal();
+    var finalTotal=updateOrderTotal(); // includes discount + shipping
 
-    // Recalculate to ensure shipping is included
-    var cartTotal=cart.reduce(function(s,c){return s+(c.price*(c.qty||1))},0);
-    var shippingCharge=(deliveryMode==='pickup')?0:(cartTotal>=35?0:5.99);
-    var finalTotal=cartTotal+shippingCharge;
     var resp=await fetch('/.netlify/functions/create-payment-intent',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -1353,6 +1401,15 @@ function loadStripeJs(){
 }
 
 // ── Products — Supabase + photo fix ───────────────────────────
+// ── Promo Codes — edit these to add/remove codes ─────────────
+// Types: 'percent' (% off subtotal) or 'fixed' ($ off subtotal)
+var PROMO_CODES={
+  'WILLOW10': {type:'percent', value:10, label:'10% off'},
+  'TIKTOK5':  {type:'fixed',   value:5,  label:'$5 off'},
+  'LAUNCH15': {type:'percent', value:15, label:'15% off'}
+};
+var activePromo=null; // currently applied promo
+
 var SUPA_URL='https://tjlybnftdultrohygmpu.supabase.co';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqbHlibmZ0ZHVsdHJvaHlnbXB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NDM3ODksImV4cCI6MjA5MTUxOTc4OX0.C6xAM0wQFsKhAU2Ufy7p0OBmar6bnyOilATNyyH5ZcI';
 var currentFilter='All';
