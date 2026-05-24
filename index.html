@@ -616,6 +616,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <button class="filter-btn" onclick="filterProducts('Rings',this)">Rings</button>
     <button class="filter-btn" onclick="filterProducts('Pendants',this)">Pendants</button>
     <button class="filter-btn" onclick="filterProducts('Charms',this)">Charms</button>
+    <button class="filter-btn" onclick="filterProducts('Custom Orders',this)" style="border-color:var(--gold);color:var(--gold);">✦ Custom Orders</button>
   </div>
   <div class="products-grid" id="productsGrid"></div>
 </section>
@@ -1504,8 +1505,11 @@ function renderProducts(){
   displayVarStore={};
   varProductStore={};
   selectedVarOpts={};
-  var filtered=currentFilter==='All'?products:products.filter(function(p){return p.category===currentFilter});
+  var filtered=currentFilter==='All'
+    ? products.filter(function(p){return p.category!=='Custom Orders'})
+    : products.filter(function(p){return p.category===currentFilter});
   filtered=filtered.filter(function(p){
+    if((p.category||'')==='Custom Orders') return true; // custom orders always show
     var dv=(p.variations||[]).filter(function(v){return v.name&&v.name.trim();});
     var qty=dv.length?dv.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     return qty>0;
@@ -1587,6 +1591,15 @@ function renderProducts(){
     }
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
     var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;aspect-ratio:3/4;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
+    // ── Custom Order card ──
+    if((p.category||'')==='Custom Orders'){
+      var custNote=p.notes||'';
+      var handleMatch=custNote.match(/^(@[\w.]+)/);
+      var handle=handleMatch?handleMatch[1]:'';
+      var descOnly=custNote.replace(handle,'').replace(/^[\s\u2014\u2013-]+/,'').trim();
+      var addBtnCustom='<button class="btn-add" data-action="addplain" data-pid="'+p.id+'" style="background:linear-gradient(135deg,var(--gold),#a07828);color:var(--deep);">\u2726 This Is Mine \u2014 Order Now \u2726</button>';
+      return'<div class="product-card" style="position:relative;border-color:var(--gold);box-shadow:0 0 18px rgba(201,168,76,0.2);">'        +'<div style="position:absolute;top:12px;left:12px;background:var(--gold);color:var(--deep);font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:2px;text-transform:uppercase;z-index:2;">Custom</div>'        +imgSection        +'<div class="product-info">'        +(handle?'<div style="font-family:\'Cinzel Decorative\',serif;font-size:13px;color:var(--gold);margin-bottom:4px;">'+handle+'</div>':'')        +'<div class="product-name">'+p.name+'</div>'        +'<div style="font-size:11px;color:var(--lavender);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Custom Order</div>'        +'<div class="product-price">$'+(parseFloat(p.price)||0).toFixed(2)+'</div>'        +(descOnly?'<div style="font-size:12px;color:var(--stardust);margin-bottom:10px;font-style:italic;">'+descOnly+'</div>':'')        +addBtnCustom        +'</div></div>';
+    }
     return'<div class="product-card">'
       +(isLow?'<div class="badge">'+(qty===1?'1 left':qty+' left')+'</div>':'')
       +imgSection
