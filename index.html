@@ -713,9 +713,19 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
             <div class="bp-price">$15</div>
           </div>
           <div class="byo-piece" data-type="anklet" data-price="5" onclick="selectByoPiece(this)">
-            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">ANKLET</div>
-            <div class="bp-name">Anklet</div>
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">1</div>
+            <div class="bp-name">1 Anklet</div>
             <div class="bp-price">$5</div>
+          </div>
+          <div class="byo-piece" data-type="anklet2" data-price="9" onclick="selectByoPiece(this)">
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">2</div>
+            <div class="bp-name">2 Anklets</div>
+            <div class="bp-price">$9</div>
+          </div>
+          <div class="byo-piece" data-type="anklet3" data-price="13" onclick="selectByoPiece(this)">
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">3</div>
+            <div class="bp-name">3 Anklets</div>
+            <div class="bp-price">$13</div>
           </div>
         </div>
       </div>
@@ -2424,7 +2434,9 @@ function updateByoSummary(){
     'bracelet3':'3 Bracelets',
     'necklace-single':'Single Strand Necklace',
     'necklace-double':'Double Stack Necklace',
-    'anklet':'Anklet'
+    'anklet':'1 Anklet',
+    'anklet2':'2 Anklets',
+    'anklet3':'3 Anklets'
   };
   var html = '<div><strong style="color:var(--gold);">Piece:</strong> '+names[byoState.type]+'</div>'
     +'<div><strong style="color:var(--gold);">Colors:</strong> '+byoState.colors.join(' + ')+'</div>'
@@ -2444,7 +2456,9 @@ function addByoToCart(){
     'bracelet3':'3 Bracelets',
     'necklace-single':'Single Strand Necklace',
     'necklace-double':'Double Stack Necklace',
-    'anklet':'Anklet'
+    'anklet':'1 Anklet',
+    'anklet2':'2 Anklets',
+    'anklet3':'3 Anklets'
   };
   var notes = document.getElementById('byoNotes').value.trim();
   var name = names[byoState.type]
