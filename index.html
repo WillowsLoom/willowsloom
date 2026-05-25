@@ -682,6 +682,11 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
         <div class="byo-pieces" id="byoPieces">
 
 
+          <div class="byo-piece" data-type="waist" data-price="15" onclick="selectByoPiece(this)">
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">WAIST</div>
+            <div class="bp-name">Waist Bead</div>
+            <div class="bp-price">$15</div>
+          </div>
           <div class="byo-piece" data-type="bracelet1" data-price="4" onclick="selectByoPiece(this)">
             <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">1</div>
             <div class="bp-name">1 Bracelet</div>
@@ -2413,6 +2418,7 @@ function selectByoSize(el){
 function updateByoSummary(){
   if(!byoState.type || !byoState.colors.length) return;
   var names = {
+    'waist':'Waist Bead',
     'bracelet1':'1 Bracelet',
     'bracelet2':'2 Bracelets',
     'bracelet3':'3 Bracelets',
