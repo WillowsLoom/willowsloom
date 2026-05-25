@@ -504,6 +504,20 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   .bc-swatch{width:30px;height:30px;}
 }
 
+.letter-cell{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:1;border:1px solid var(--plum);border-radius:4px;
+  font-family:'Cinzel Decorative',serif;font-size:11px;color:var(--white);
+  cursor:pointer;transition:all 0.15s;background:rgba(45,27,78,0.3);
+  position:relative;user-select:none;
+}
+.letter-cell:hover:not(.letter-sold){border-color:var(--gold);color:var(--gold);}
+.letter-cell.letter-active{border-color:var(--gold);background:rgba(201,168,76,0.2);color:var(--gold);font-weight:700;}
+.letter-cell.letter-sold{opacity:0.4;cursor:not-allowed;color:var(--lavender);}
+.letter-cell.letter-sold::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);
+  width:70%;height:1px;background:#f87171;
+}
 </style>
 </head>
 <body>
@@ -1144,7 +1158,8 @@ function addToCart(product,variation){
     notify('✦ Sorry — only '+maxQty+' available!');
     return;
   }
-  var item={id:itemId,name:product.name+(variation?' — '+variation.name:''),price:parseFloat(variation?variation.price:product.price)||0,photo:product.photos&&product.photos.length?product.photos[0]:null,sku:product.sku||''};
+  var wovenLetter=((product.name||'').toLowerCase().indexOf('woven')>-1&&(product.name||'').toLowerCase().indexOf('wild')>-1)?selectedLetter[itemId]:'';
+  var item={id:itemId,name:product.name+(variation?' — '+variation.name:'')+(wovenLetter?' (Initial: '+wovenLetter+')':''),price:parseFloat(variation?variation.price:product.price)||0,photo:product.photos&&product.photos.length?product.photos[0]:null,sku:product.sku||'',pid:itemId};
   if(existing){existing.qty=(existing.qty||1)+1}else{item.qty=1;cart.push(item)}
   renderCart();notify('✦ Added to bag!')
 }
@@ -1167,6 +1182,14 @@ function renderCart(){
 }
 function checkout(){
   if(!cart.length){notify('✦ Your bag is empty!');return;}
+  // Validate letter selected for Woven & Wild items
+  var missing=cart.some(function(c){
+    if((c.name||'').toLowerCase().indexOf('woven')>-1&&(c.name||'').toLowerCase().indexOf('wild')>-1){
+      return !(c.name||'').match(/Initial: [A-Z]/);
+    }
+    return false;
+  });
+  if(missing){notify('✦ Please choose your initial for the Woven & Wild set!');return;}
   openStripeCheckout();
 }
 
@@ -1388,6 +1411,13 @@ async function submitStripePayment(){
         });
       }
     }catch(e){console.log('GA tracking error:',e);}
+    // Mark letter sold for any Woven & Wild items
+    cart.forEach(function(c){
+      if((c.name||'').toLowerCase().indexOf('woven')>-1&&(c.name||'').toLowerCase().indexOf('wild')>-1){
+        var match=(c.name||'').match(/Initial: ([A-Z])/);
+        if(match)markLetterSold(match[1]);
+      }
+    });
     cart=[];renderCart();
   }
 }
@@ -1411,6 +1441,68 @@ var PROMO_CODES={
 var activePromo=null; // currently applied promo
 
 var SUPA_URL='https://tjlybnftdultrohygmpu.supabase.co';
+// ── Letter inventory (A-Z for Woven & Wild) ──────────────────
+var letterInventory={}; // {A: true, B: false, ...}
+var selectedLetter={}; // {productId: 'B'}
+
+function loadLetterInventory(cb){
+  fetch(SUPA_URL+'/rest/v1/letter_inventory?select=letter,available',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    letterInventory={};
+    (rows||[]).forEach(function(r){letterInventory[r.letter]=r.available;});
+    if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
+
+function markLetterSold(letter){
+  if(!letter)return;
+  fetch(SUPA_URL+'/rest/v1/letter_inventory?letter=eq.'+letter,{
+    method:'PATCH',
+    headers:Object.assign({'Content-Type':'application/json'},{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}),
+    body:JSON.stringify({available:false,updated_at:new Date().toISOString()})
+  }).then(function(){
+    letterInventory[letter]=false;
+    // Update all grids on page
+    document.querySelectorAll('.letter-cell[data-letter="'+letter+'"]').forEach(function(el){
+      el.classList.add('letter-sold');
+    });
+  }).catch(function(e){console.log('Letter mark error:',e);});
+}
+
+function renderLetterGrid(pid){
+  var wrap=document.createElement('div');
+  wrap.style.cssText='margin:10px 0 14px;';
+  var label=document.createElement('div');
+  label.style.cssText='font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-family:"Cormorant Garamond",serif;';
+  label.textContent='Choose Your Initial';
+  wrap.appendChild(label);
+  var grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(9,1fr);gap:5px;';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(function(l){
+    var cell=document.createElement('div');
+    cell.className='letter-cell';
+    cell.setAttribute('data-letter',l);
+    cell.setAttribute('data-pid',pid);
+    cell.textContent=l;
+    var avail=letterInventory[l]!==false;
+    if(!avail)cell.classList.add('letter-sold');
+    cell.onclick=function(){
+      if(cell.classList.contains('letter-sold'))return;
+      // Deselect previous
+      document.querySelectorAll('.letter-cell[data-pid="'+pid+'"]').forEach(function(c){c.classList.remove('letter-active');});
+      cell.classList.add('letter-active');
+      selectedLetter[pid]=l;
+    };
+    grid.appendChild(cell);
+  });
+  wrap.appendChild(grid);
+  var hint=document.createElement('div');
+  hint.id='letter-hint-'+pid;
+  hint.style.cssText='font-size:11px;color:#f87171;margin-top:6px;min-height:14px;';
+  wrap.appendChild(hint);
+  return wrap;
+}
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqbHlibmZ0ZHVsdHJvaHlnbXB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NDM3ODksImV4cCI6MjA5MTUxOTc4OX0.C6xAM0wQFsKhAU2Ufy7p0OBmar6bnyOilATNyyH5ZcI';
 var currentFilter='All';
 var products=[];
@@ -1617,6 +1709,7 @@ function renderProducts(){
     var needsSizing=isBracelet||isAnklet;
     // Store full product for lookup (always, for modal routing)
     varProductStore[p.id]=p;
+    var isWovenWild=(p.name||'').toLowerCase().indexOf('woven')>-1&&(p.name||'').toLowerCase().indexOf('wild')>-1;
     if(hasVars){
       displayVarStore[p.id]=displayVars;
       if(!selectedVarOpts.hasOwnProperty(p.id))selectedVarOpts[p.id]=0;
@@ -1632,6 +1725,7 @@ function renderProducts(){
         +optItems
         +'</select>'
         +'</div>'
+        +(isWovenWild?'<div id="lettergrid-'+p.id+'"></div>':'')
         +(isNecklace
           ?'<button class="btn-add" data-action="varnecklace" data-pid="'+p.id+'">✦ Add to Bag ✦</button>'
           :needsSizing
@@ -1670,6 +1764,14 @@ function renderProducts(){
       +'</div></div>';
   }).join('');
   grid.innerHTML=cards;
+  // Populate letter grids for Woven & Wild products
+  document.querySelectorAll('[id^="lettergrid-"]').forEach(function(el){
+    var pid=el.id.replace('lettergrid-','');
+    var p=varProductStore[pid];
+    if(p&&(p.name||'').toLowerCase().indexOf('woven')>-1&&(p.name||'').toLowerCase().indexOf('wild')>-1){
+      el.appendChild(renderLetterGrid(pid));
+    }
+  });
 }
 
 // ── FAQ ────────────────────────────────────────────────────────
@@ -2149,7 +2251,7 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadProducts();
+loadLetterInventory(function(){loadProducts();});
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
