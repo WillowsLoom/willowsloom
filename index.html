@@ -715,12 +715,18 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
             <div class="bp-name">Anklet</div>
             <div class="bp-price">$5</div>
           </div>
+          <div class="byo-piece" data-type="friendship-set" data-price="10" onclick="selectByoPiece(this)">
+            <div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;padding:4px 10px;border:1px solid rgba(201,168,76,0.3);border-radius:10px;display:inline-block;">BFF SET</div>
+            <div class="bp-name">Friendship<br/>Bracelet Set</div>
+            <div class="bp-price">$10</div>
+          </div>
         </div>
       </div>
 
       <!-- Step 2: Pick colors -->
       <div class="byo-step" id="byoStep2" style="display:none;">
         <div class="byo-step-title"><span class="byo-num">2</span> Choose Your Colors <span style="font-size:12px;color:var(--lavender);font-weight:400;">(select all you want mixed together)</span></div>
+        <div id="regularColors">
         <div class="byo-colors" id="byoColors">
           <div class="byo-color" data-color="Pink" style="--bc:#f472b6;" onclick="toggleByoColor(this)"><div class="bc-swatch"></div><div class="bc-name">Pink</div></div>
           <div class="byo-color" data-color="Dark Pink" style="--bc:#db2777;" onclick="toggleByoColor(this)"><div class="bc-swatch"></div><div class="bc-name">Dark Pink</div></div>
@@ -740,6 +746,51 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
           <div class="byo-color" data-color="Oil Slick" style="--bc:linear-gradient(135deg,#3b82f6,#a855f7,#10b981);" onclick="toggleByoColor(this)"><div class="bc-swatch" style="background:linear-gradient(135deg,#3b82f6,#a855f7,#10b981);"></div><div class="bc-name">Oil Slick</div></div>
           <div class="byo-color" data-color="Rainbow" style="--bc:linear-gradient(135deg,#ef4444,#f97316,#facc15,#22c55e,#3b82f6,#a855f7);" onclick="toggleByoColor(this)"><div class="bc-swatch" style="background:linear-gradient(135deg,#ef4444,#f97316,#facc15,#22c55e,#3b82f6,#a855f7);"></div><div class="bc-name">Rainbow</div></div>
         </div>
+        </div><!-- end regularColors -->
+        <div id="friendshipColors" style="display:none;">
+          <div style="font-size:13px;color:var(--lavender);margin-bottom:12px;">Choose your color combo:</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="byo-friendship-opt" data-combo="Black Beads + White Letter" onclick="selectFriendshipCombo(this)"
+              style="padding:12px 16px;border:1px solid var(--plum);border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px;">
+              <div style="display:flex;gap:6px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#1a1a1a;border:1px solid #555;"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#f0f0f0;border:1px solid #ccc;"></div>
+              </div>
+              <div>
+                <div style="font-size:14px;color:var(--white);">Black Beads + White Letter</div>
+                <div style="font-size:11px;color:var(--lavender);">Classic contrast</div>
+              </div>
+            </div>
+            <div class="byo-friendship-opt" data-combo="White Beads + Black Letter" onclick="selectFriendshipCombo(this)"
+              style="padding:12px 16px;border:1px solid var(--plum);border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px;">
+              <div style="display:flex;gap:6px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#f0f0f0;border:1px solid #ccc;"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#1a1a1a;border:1px solid #555;"></div>
+              </div>
+              <div>
+                <div style="font-size:14px;color:var(--white);">White Beads + Black Letter</div>
+                <div style="font-size:11px;color:var(--lavender);">Clean & bold</div>
+              </div>
+            </div>
+            <div class="byo-friendship-opt" data-combo="Black Beads + Neon Letter" onclick="selectFriendshipCombo(this)"
+              style="padding:12px 16px;border:1px solid var(--plum);border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px;">
+              <div style="display:flex;gap:6px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#1a1a1a;border:1px solid #555;"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#ff00ff,#00ffff);border:1px solid #aaa;"></div>
+              </div>
+              <div>
+                <div style="font-size:14px;color:var(--white);">Black Beads + Neon Letter</div>
+                <div style="font-size:11px;color:var(--lavender);">Bold & electric</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px;">
+            <label style="font-size:12px;color:var(--lavender);letter-spacing:1px;display:block;margin-bottom:6px;">WORD OR LETTERS (e.g. BFF, BESTIE, your name)</label>
+            <input id="friendshipWord" type="text" maxlength="10" placeholder="e.g. BFF"
+              style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:10px 14px;font-size:15px;border-radius:4px;outline:none;text-transform:uppercase;letter-spacing:2px;"
+              oninput="this.value=this.value.toUpperCase();updateByoSummary()"/>
+          </div>
+        </div><!-- end friendshipColors -->
         <div id="byoColorNote" style="font-size:12px;color:var(--lavender);margin-top:8px;font-style:italic;display:none;">✦ All selected colors will be mixed together in the bead spinner</div>
       </div>
 
@@ -1441,6 +1492,28 @@ var PROMO_CODES={
 var activePromo=null; // currently applied promo
 
 var SUPA_URL='https://tjlybnftdultrohygmpu.supabase.co';
+// ── BYO Pricing (loaded from Supabase) ───────────────────────
+var byoPricing={
+  'waist':15,'waist-bundle':20,'bracelet1':5,'bracelet3':10,
+  'necklace-single':10,'necklace-double':15,'anklet':5,'friendship-set':10
+};
+function loadByoPricing(cb){
+  fetch(SUPA_URL+'/rest/v1/byo_pricing?select=type,price,active',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    (rows||[]).forEach(function(r){if(r.active)byoPricing[r.type]=parseFloat(r.price)||0;});
+    // Update displayed prices on page
+    document.querySelectorAll('.byo-piece').forEach(function(el){
+      var t=el.getAttribute('data-type');
+      if(byoPricing[t]!==undefined){
+        el.setAttribute('data-price',byoPricing[t]);
+        var priceEl=el.querySelector('.bp-price');
+        if(priceEl)priceEl.textContent='$'+byoPricing[t].toFixed(2);
+      }
+    });
+    if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
 // ── Letter inventory (A-Z for Woven & Wild) ──────────────────
 var letterInventory={}; // {A: true, B: false, ...}
 var selectedLetter={}; // {productId: 'B'}
@@ -2251,12 +2324,24 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadLetterInventory(function(){loadProducts();});
+loadByoPricing(function(){loadLetterInventory(function(){loadProducts();});});
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
 // ── Build Your Own ────────────────────────────────────────
-var byoState = {type:null, price:0, colors:[], size:'', customSize:''};
+var byoState = {type:null, price:0, colors:[], size:'', customSize:'', friendshipCombo:'', friendshipWord:''};
+
+function selectFriendshipCombo(el){
+  document.querySelectorAll('.byo-friendship-opt').forEach(function(o){
+    o.style.borderColor='var(--plum)';o.style.background='transparent';
+  });
+  el.style.borderColor='var(--gold)';
+  el.style.background='rgba(201,168,76,0.1)';
+  byoState.friendshipCombo=el.getAttribute('data-combo');
+  byoState.colors=[byoState.friendshipCombo];
+  updateByoSummary();
+  document.getElementById('byoStep3').style.display='block';
+}
 
 function selectByoPiece(el){
   document.querySelectorAll('.byo-piece').forEach(function(p){p.classList.remove('selected')});
@@ -2268,6 +2353,16 @@ function selectByoPiece(el){
   document.getElementById('byoColorNote').style.display='none';
   document.getElementById('byoStep2').style.display='block';
   document.getElementById('byoStep3').style.display='none';
+  // Show friendship color options if friendship type selected
+  var fColors=document.getElementById('friendshipColors');
+  var regColors=document.getElementById('regularColors');
+  if(byoState.type==='friendship-set'){
+    if(fColors)fColors.style.display='block';
+    if(regColors)regColors.style.display='none';
+  } else {
+    if(fColors)fColors.style.display='none';
+    if(regColors)regColors.style.display='block';
+  }
   document.getElementById('byoStep4').style.display='none';
   document.getElementById('byoSummary').style.display='none';
   renderByoSize();
@@ -2422,7 +2517,8 @@ function updateByoSummary(){
     'bracelet3':'3 Bracelets',
     'necklace-single':'Single Strand Necklace',
     'necklace-double':'Double Stack Necklace',
-    'anklet':'Anklet'
+    'anklet':'Anklet',
+    'friendship-set':'Friendship Bracelet Set (x2)'
   };
   var html = '<div><strong style="color:var(--gold);">Piece:</strong> '+names[byoState.type]+'</div>'
     +'<div><strong style="color:var(--gold);">Colors:</strong> '+byoState.colors.join(' + ')+'</div>'
@@ -2435,6 +2531,7 @@ function updateByoSummary(){
 function addByoToCart(){
   if(!byoState.type){notify('✦ Please choose a piece!');return;}
   if(!byoState.colors.length){notify('✦ Please choose at least one color!');return;}
+  if(byoState.type==='friendship-set'&&!byoState.friendshipCombo){notify('✦ Please choose a color combo!');return;}
   var names = {
     'waist':'Waist Bead',
     'waist-bundle':'Waist Bead + 2 Bracelets',
@@ -2445,8 +2542,10 @@ function addByoToCart(){
     'anklet':'Anklet'
   };
   var notes = document.getElementById('byoNotes').value.trim();
+  var fw=byoState.type==='friendship-set'?(document.getElementById('friendshipWord')||{}).value||'':'';
   var name = names[byoState.type]
     +' — '+byoState.colors.join('+')
+    +(fw?' · Word: '+fw:'')
     +(byoState.customSize?' ('+byoState.customSize+')':'')
     +(notes?' · '+notes:'');
   cart.push({
