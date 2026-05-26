@@ -31,11 +31,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--deep);color:var(--moonbeam);font-family:'Crimson Pro',Georgia,serif;overflow-x:hidden;cursor:none}
-
-/* Custom cursor */
-.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;mix-blend-mode:screen}
-.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid var(--lavender);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease;opacity:0.6}
+body{background:var(--deep);color:var(--moonbeam);font-family:'Crimson Pro',Georgia,serif;overflow-x:hidden;}
 
 /* ── Announcement Bar ── */
 #announcementBar{background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--moonbeam);text-align:center;padding:10px 48px 10px 24px;font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:2px;position:relative;z-index:101;min-height:38px;display:flex;align-items:center;justify-content:center}
@@ -518,12 +514,16 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);
   width:70%;height:1px;background:#f87171;
 }
+
+/* ── Custom section select fix ── */
+select option {
+  background: #1a0d35;
+  color: #e8e0f0;
+}
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
 <div class="stars" id="stars"></div>
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
 
@@ -567,7 +567,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   <span class="menu-close" id="menuClose">✕</span>
   <a href="#home" onclick="closeMobile()">Home</a>
   <a href="#shop" onclick="closeMobile()">Shop</a>
-  <a href="#custom-section" onclick="closeMobile()">Custom</a>
   <a href="#about" onclick="closeMobile()">About</a>
   <a href="#faq" onclick="closeMobile()">FAQ</a>
   <a href="#contact" onclick="closeMobile()">Contact</a>
@@ -790,13 +789,11 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   <p class="section-sub">✦ made just for you ✦</p>
   <div class="divider"></div>
 
-  <!-- Gallery -->
   <div style="max-width:900px;margin:0 auto 48px;padding:0 20px;">
     <div id="customGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:12px;"></div>
     <p id="customGalleryEmpty" style="text-align:center;font-size:13px;color:var(--lavender);font-style:italic;"></p>
   </div>
 
-  <!-- Pricing note -->
   <div style="max-width:620px;margin:0 auto 48px;padding:24px 28px;background:rgba(45,27,78,0.4);border:1px solid rgba(201,168,76,0.25);border-radius:12px;text-align:center;">
     <div style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);margin-bottom:12px;letter-spacing:1px;">✦ How Custom Pricing Works ✦</div>
     <p style="font-size:14px;color:var(--stardust);line-height:1.8;margin-bottom:14px;">Every custom piece is one of a kind — pricing is determined after we chat about your vision. Cost is based on:</p>
@@ -811,7 +808,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     <p style="font-size:13px;color:var(--lavender);font-style:italic;">No payment required upfront — I’ll reach out with a quote before anything is made. 🤍</p>
   </div>
 
-  <!-- Request Form -->
   <div style="max-width:620px;margin:0 auto;padding:0 20px;">
     <div style="background:rgba(45,27,78,0.4);border:1px solid rgba(107,63,160,0.4);border-radius:16px;padding:32px 28px;">
       <div style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:6px;text-align:center;">Request a Custom Piece</div>
@@ -824,16 +820,16 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       <input id="custContact" type="text" placeholder="email@example.com or @yourtiktok" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Piece Type *</label>
-      <select id="custPieceType" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;appearance:none;">
-        <option value="">Select a piece type...</option>
-        <option>Necklace / Choker</option>
-        <option>Bracelet</option>
-        <option>Anklet</option>
-        <option>Earrings</option>
-        <option>Waist Beads</option>
-        <option>Car Charm / Lanyard</option>
-        <option>Set (multiple pieces)</option>
-        <option>Other / Not sure</option>
+      <select id="custPieceType" style="width:100%;box-sizing:border-box;background:#1a0d35;border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'">
+        <option value="" style="background:#1a0d35;color:#e8e0f0;">Select a piece type...</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Necklace / Choker</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Bracelet</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Anklet</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Earrings</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Waist Beads</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Car Charm / Lanyard</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Set (multiple pieces)</option>
+        <option style="background:#1a0d35;color:#e8e0f0;">Other / Not sure</option>
       </select>
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Colors / Style / Vibe *</label>
@@ -846,10 +842,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       <textarea id="custNotes" rows="4" placeholder="Any details, inspo, or questions — the more you share the better!" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:20px;resize:vertical;font-family:'Crimson Pro',serif;min-height:80px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"></textarea>
 
       <div id="custFormMsg" style="font-size:13px;margin-bottom:12px;min-height:18px;text-align:center;"></div>
-      <button onclick="submitCustomRequest(event)"
-        style="width:100%;background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--white);border:1px solid var(--lavender);padding:14px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:8px;">
-        ✦ Send My Request ✦
-      </button>
+      <button onclick="submitCustomRequest(event)" style="width:100%;background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--white);border:1px solid var(--lavender);padding:14px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:8px;">✦ Send My Request ✦</button>
     </div>
   </div>
 </section>
@@ -1185,12 +1178,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 })();
 
 // ── Cursor ─────────────────────────────────────────────────────
-var cur=document.getElementById('cursor');
-var ring=document.getElementById('cursorRing');
-document.addEventListener('mousemove',function(e){
-  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
-  setTimeout(function(){ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'},80)
-});
 
 // ── Announcement Bar ───────────────────────────────────────────
 // To change the announcement text, edit the line below:
@@ -1859,77 +1846,10 @@ function renderProducts(){
   });
 }
 
-// ── Custom Requests ───────────────────────────────────────────────
-var customGalleryLoaded=false;
-function loadCustomGallery(){
-  if(customGalleryLoaded)return;
-  var grid=document.getElementById('customGallery');
-  var empty=document.getElementById('customGalleryEmpty');
-  if(!grid)return;
-  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
-  }).then(function(r){return r.json();}).then(function(rows){
-    customGalleryLoaded=true;
-    if(!rows||!rows.length){
-      if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';
-      return;
-    }
-    if(empty)empty.style.display='none';
-    rows.forEach(function(req){
-      var photos=req.photos||[];
-      if(!photos.length)return;
-      // Only show FIRST photo per showcase entry to avoid duplicates
-      var photo=photos[0];
-      var card=document.createElement('div');
-      card.style.cssText='border-radius:10px;overflow:hidden;aspect-ratio:1;background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);position:relative;';
-      var img=document.createElement('img');img.src=photo;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
-      img.alt=req.piece_type||'Custom piece';
-      var badge=document.createElement('div');
-      badge.style.cssText='position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.65);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:10px;font-family:"Cormorant Garamond",serif;letter-spacing:1px;';
-      badge.textContent=req.piece_type||'Custom';
-      card.appendChild(img);card.appendChild(badge);grid.appendChild(card);
-    });
-  }).catch(function(){if(empty)empty.textContent='';});
-}
-
-function submitCustomRequest(e){
-  var name=(document.getElementById('custName').value||'').trim();
-  var contact=(document.getElementById('custContact').value||'').trim();
-  var pieceType=(document.getElementById('custPieceType').value||'').trim();
-  var colors=(document.getElementById('custColors').value||'').trim();
-  var initial=(document.getElementById('custInitial').value||'').trim();
-  var notes=(document.getElementById('custNotes').value||'').trim();
-  var msg=document.getElementById('custFormMsg');
-  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
-  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
-  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
-  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
-  var btn=e.currentTarget;btn.disabled=true;btn.textContent='Sending...';
-  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
-  fetch(SUPA_URL+'/rest/v1/custom_requests',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-    body:JSON.stringify(row)
-  }).then(function(r){
-    if(r.ok||r.status===201){
-      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
-      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-      document.getElementById('custPieceType').value='';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    } else {
-      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    }
-  }).catch(function(){
-    msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
-    btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-  });
-}
-
-// ── FAQ
+// ── FAQ ────────────────────────────────────────────────────────
 var faqs=[
   {q:'How long does shipping take?',a:'Most orders ship within 3–5 business days. Once shipped, delivery typically takes 3–7 days depending on your location.'},
-  {q:'Do you accept custom pieces?',a:'Yes! Head to the Custom section to submit a request. Pricing is based on materials, time, and complexity — I\'ll reach out with a quote before anything is made.'},
+  {q:'Do you accept custom orders?',a:'At this time I do not accept custom orders — all pieces are ready-made and available in the shop. Each one is handcrafted and one of a kind!'},
   {q:'What materials do you use?',a:'I work with resin, stainless steel, copper, wire, gemstones, crystals, and more. Each listing describes the specific materials used.'},
   {q:"What is your return policy?",a:"We accept returns within 14 days of delivery on unworn, undamaged items. Shipping costs are non-refundable and the customer covers return shipping. See our full Return Policy section for details."},
   {q:'Do you ship internationally?',a:'Currently I ship within the United States. International shipping may be available — just reach out and I\'ll see what I can do!'},
@@ -2403,8 +2323,7 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadLetterInventory(function(){loadProducts();});
-loadCustomGallery();
+loadLetterInventory(function(){loadProducts();setTimeout(function(){if(typeof loadCustomGallery==='function')loadCustomGallery();},100);});
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
@@ -2646,3 +2565,58 @@ function addByoToCart(){
 </div>
 </body>
 </html>
+// ── Custom Requests ─────────────────────────────────────────
+var customGalleryLoaded=false;
+function loadCustomGallery(){
+
+  if(customGalleryLoaded)return;
+  var grid=document.getElementById('customGallery');
+  var empty=document.getElementById('customGalleryEmpty');
+  if(!grid)return;
+  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    customGalleryLoaded=true;
+    if(!rows||!rows.length){if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';return;}
+    if(empty)empty.style.display='none';
+    rows.forEach(function(req){
+      var photos=req.photos||[];if(!photos.length)return;
+      var card=document.createElement('div');card.style.cssText='border-radius:10px;overflow:hidden;aspect-ratio:1;background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);position:relative;';
+      var img=document.createElement('img');img.src=photos[0];img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';img.alt=req.piece_type||'Custom piece';
+      var badge=document.createElement('div');badge.style.cssText='position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.65);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:10px;font-family:"Cormorant Garamond",serif;letter-spacing:1px;';
+      badge.textContent=req.piece_type||'Custom';
+      card.appendChild(img);card.appendChild(badge);grid.appendChild(card);
+    });
+  }).catch(function(){if(empty)empty.textContent='';});
+}
+function submitCustomRequest(e){
+  var name=(document.getElementById('custName').value||'').trim();
+  var contact=(document.getElementById('custContact').value||'').trim();
+  var pieceType=(document.getElementById('custPieceType').value||'').trim();
+  var colors=(document.getElementById('custColors').value||'').trim();
+  var initial=(document.getElementById('custInitial').value||'').trim();
+  var notes=(document.getElementById('custNotes').value||'').trim();
+  var msg=document.getElementById('custFormMsg');
+  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
+  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
+  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
+  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
+  var btn=e.currentTarget;btn.disabled=true;btn.textContent='Sending...';
+  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
+  fetch(SUPA_URL+'/rest/v1/custom_requests',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(row)
+  }).then(function(r){
+    if(r.ok||r.status===201){
+      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
+      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(i){var el=document.getElementById(i);if(el)el.value='';});
+      document.getElementById('custPieceType').value='';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    } else {
+      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    }
+  }).catch(function(){msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';btn.textContent='✦ Send My Request ✦';btn.disabled=false;});
+}
+
