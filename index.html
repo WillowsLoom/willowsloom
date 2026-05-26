@@ -518,15 +518,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);
   width:70%;height:1px;background:#f87171;
 }
-
-/* ── Page switching ──────────────────────────── */
-.page-section { display: none !important; }
-.page-section.active { display: block !important; }
-#home.page-section.active { display: flex !important; }
-
-
-.form-label{display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
-.form-input{width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;}
 </style>
 </head>
 <body>
@@ -544,23 +535,23 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 
 <!-- Mobile-only: Build Your Own sticky banner -->
 <div id="byoBanner">
-  <a href="#" onclick="showPage('build-your-own');return false;">✦ Build Your Own Bead Creation ✦</a>
+  <a href="#build-your-own">✦ Build Your Own Bead Creation ✦</a>
 </div>
 
 <div class="notif" id="notif"></div>
 
 <!-- Nav -->
 <nav id="mainNav">
-  <a href="#" onclick="showPage('home');return false;" class="nav-logo">W·L</a>
+  <a href="#home" class="nav-logo">W·L</a>
   <ul class="nav-links">
-    <li><a href="#" onclick="showPage('home');return false;">Home</a></li>
-    <li><a href="#" onclick="showPage('shop');return false;">Shop</a></li>
-    <li><a href="#" onclick="showPage('build-your-own');return false;" style="color:var(--gold);font-weight:700;border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:4px 12px;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='none'">✦ Build Yours</a></li>
-    <li><a href="#" onclick="showPage('custom-section');return false;">Custom</a></li>
-    <li><a href="#" onclick="showPage('about');return false;">About</a></li>
-    <li><a href="#" onclick="showPage('faq');return false;">FAQ</a></li>
-    <li><a href="#" onclick="showPage('contact');return false;">Contact</a></li>
-    <li><a href="#" onclick="showPage('socials');return false;">Socials</a></li>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#build-your-own" style="color:var(--gold);font-weight:700;border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:4px 12px;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='none'">✦ Build Yours</a></li>
+    <li><a href="#custom-section">Custom</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#socials">Socials</a></li>
   </ul>
   <div class="nav-social">
     <a href="https://www.tiktok.com/@willowsloom" target="_blank">TikTok ✦</a>
@@ -574,14 +565,14 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
   <span class="menu-close" id="menuClose">✕</span>
-  <a href="#" onclick="showPage('home');closeMobile();return false;">Home</a>
-  <a href="#" onclick="showPage('shop');closeMobile();return false;">Shop</a>
-  <a href="#" onclick="showPage('custom-section');closeMobile();return false;">Custom</a>
-  <a href="#" onclick="showPage('about');closeMobile();return false;">About</a>
-  <a href="#" onclick="showPage('faq');closeMobile();return false;">FAQ</a>
-  <a href="#" onclick="showPage('contact');closeMobile();return false;">Contact</a>
-  <a href="#" onclick="showPage('socials');closeMobile();return false;">Socials</a>
-  <a href="#" onclick="showPage('build-your-own');closeMobile();return false;" class="mobile-menu-byo">✦ Build Your Own ✦</a>
+  <a href="#home" onclick="closeMobile()">Home</a>
+  <a href="#shop" onclick="closeMobile()">Shop</a>
+  <a href="#custom-section" onclick="closeMobile()">Custom</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#faq" onclick="closeMobile()">FAQ</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+  <a href="#socials" onclick="closeMobile()">Socials</a>
+  <a href="#build-your-own" onclick="closeMobile()" class="mobile-menu-byo">✦ Build Your Own ✦</a>
   <a href="https://www.tiktok.com/@willowsloom" target="_blank">TikTok</a>
   <a href="https://www.facebook.com/profile.php?id=61570865845574" target="_blank">Facebook</a>
 </div>
@@ -612,7 +603,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </div>
 
 <!-- Hero -->
-<section id="home" class="page-section">
+<section id="home">
   <div class="hero-glow"></div>
   <img src="Cosmic_elegance_in_Willow_s_Loom_jewelry__1_.png" alt="Willow's Loom Jewelry" class="hero-logo" onerror="this.style.display='none'"/>
   <h1 class="hero-title">Willow's Loom</h1>
@@ -622,14 +613,14 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
     Every purchase brings me one step closer to my dream — <em>a life on the open road, creating under starlit skies.</em> When you wear Willow's Loom, you're not just wearing jewelry. You're fueling a journey.
   </p>
   <div class="hero-btns">
-    <a href="#" onclick="showPage('shop');return false;" class="btn-primary">✦ Shop the Collection</a>
-    <a href="#" onclick="showPage('about');return false;" class="btn-ghost">My Story</a>
+    <a href="#shop" class="btn-primary">✦ Shop the Collection</a>
+    <a href="#about" class="btn-ghost">My Story</a>
   </div>
   <div class="scroll-hint">✦ scroll ✦</div>
 </section>
 
 <!-- Shop -->
-<section id="shop" class="page-section">
+<section id="shop">
   <h2 class="section-title">The Collection</h2>
   <p class="section-sub">✦ handmade with intention ✦</p>
   <div class="divider"></div>
@@ -647,7 +638,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- Build Your Own -->
-<section id="build-your-own" class="page-section" style="padding:0 0 80px;background:var(--deep);position:relative;overflow:hidden;">
+<section id="build-your-own" style="padding:0 0 80px;background:var(--deep);position:relative;overflow:hidden;">
   <!-- Decorative background glow -->
   <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(107,63,160,0.2) 0%,transparent 70%);pointer-events:none;"></div>
 
@@ -793,23 +784,23 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- Custom Pieces -->
-<section id="custom-section" class="page-section" style="padding:80px 0;background:linear-gradient(180deg,var(--deep),var(--midnight));position:relative;overflow:hidden;">
+<section id="custom-section" style="padding:80px 0;background:linear-gradient(180deg,var(--deep),var(--midnight));position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(107,63,160,0.15),transparent 70%);pointer-events:none;"></div>
   <h2 class="section-title">Custom Pieces</h2>
   <p class="section-sub">✦ made just for you ✦</p>
   <div class="divider"></div>
 
-  <!-- Showcase Gallery -->
+  <!-- Gallery -->
   <div style="max-width:900px;margin:0 auto 48px;padding:0 20px;">
     <div id="customGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:12px;"></div>
-    <p id="customGalleryEmpty" style="text-align:center;font-size:13px;color:var(--lavender);font-style:italic;">Loading inspiration pieces...</p>
+    <p id="customGalleryEmpty" style="text-align:center;font-size:13px;color:var(--lavender);font-style:italic;"></p>
   </div>
 
   <!-- Pricing note -->
   <div style="max-width:620px;margin:0 auto 48px;padding:24px 28px;background:rgba(45,27,78,0.4);border:1px solid rgba(201,168,76,0.25);border-radius:12px;text-align:center;">
     <div style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);margin-bottom:12px;letter-spacing:1px;">✦ How Custom Pricing Works ✦</div>
     <p style="font-size:14px;color:var(--stardust);line-height:1.8;margin-bottom:14px;">Every custom piece is one of a kind — pricing is determined after we chat about your vision. Cost is based on:</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px;text-align:left;max-width:380px;margin-left:auto;margin-right:auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 auto 14px;text-align:left;max-width:380px;">
       <div style="font-size:13px;color:var(--lavender);">✦ Materials used</div>
       <div style="font-size:13px;color:var(--lavender);">✦ Complexity &amp; time</div>
       <div style="font-size:13px;color:var(--lavender);">✦ Shipping &amp; handling</div>
@@ -817,25 +808,23 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
       <div style="font-size:13px;color:var(--lavender);">✦ Size &amp; length</div>
       <div style="font-size:13px;color:var(--lavender);">✦ Personalization details</div>
     </div>
-    <p style="font-size:13px;color:var(--lavender);font-style:italic;">No payment required upfront — I'll reach out with a quote before anything is made. 🤍</p>
+    <p style="font-size:13px;color:var(--lavender);font-style:italic;">No payment required upfront — I’ll reach out with a quote before anything is made. 🤍</p>
   </div>
 
   <!-- Request Form -->
   <div style="max-width:620px;margin:0 auto;padding:0 20px;">
     <div style="background:rgba(45,27,78,0.4);border:1px solid rgba(107,63,160,0.4);border-radius:16px;padding:32px 28px;">
       <div style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:6px;text-align:center;">Request a Custom Piece</div>
-      <p style="font-size:13px;color:var(--lavender);text-align:center;margin-bottom:24px;">Fill this out and I'll get back to you within 1-2 days ✦</p>
+      <p style="font-size:13px;color:var(--lavender);text-align:center;margin-bottom:24px;">Fill this out and I’ll get back to you within 1-2 days ✦</p>
 
-      <label class="form-label">Your Name *</label>
-      <input id="custName" type="text" placeholder="Your name" class="form-input" style="margin-bottom:16px;"
-        onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Your Name *</label>
+      <input id="custName" type="text" placeholder="Your name" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
-      <label class="form-label">Email or TikTok Handle *</label>
-      <input id="custContact" type="text" placeholder="email@example.com or @yourtiktok" class="form-input" style="margin-bottom:16px;"
-        onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Email or TikTok Handle *</label>
+      <input id="custContact" type="text" placeholder="email@example.com or @yourtiktok" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
-      <label class="form-label">Piece Type *</label>
-      <select id="custPieceType" class="form-input" style="margin-bottom:16px;appearance:none;">
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Piece Type *</label>
+      <select id="custPieceType" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;appearance:none;">
         <option value="">Select a piece type...</option>
         <option>Necklace / Choker</option>
         <option>Bracelet</option>
@@ -847,21 +836,17 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
         <option>Other / Not sure</option>
       </select>
 
-      <label class="form-label">Colors / Style / Vibe *</label>
-      <input id="custColors" type="text" placeholder="e.g. purple and gold, gothic, earthy..." class="form-input" style="margin-bottom:16px;"
-        onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Colors / Style / Vibe *</label>
+      <input id="custColors" type="text" placeholder="e.g. purple and gold, gothic, earthy..." style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
-      <label class="form-label">Initial / Word (if applicable)</label>
-      <input id="custInitial" type="text" placeholder="e.g. A, COVEN, BESTIE..." class="form-input" style="margin-bottom:16px;text-transform:uppercase;"
-        onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"
-        oninput="this.value=this.value.toUpperCase()"/>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Initial / Word (if applicable)</label>
+      <input id="custInitial" type="text" placeholder="e.g. A, COVEN, BESTIE..." style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;text-transform:uppercase;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'" oninput="this.value=this.value.toUpperCase()"/>
 
-      <label class="form-label">Tell Me More</label>
-      <textarea id="custNotes" rows="4" placeholder="Any details, inspo, or questions — the more you share the better!" class="form-input" style="margin-bottom:20px;resize:vertical;font-family:'Crimson Pro',serif;min-height:80px;"
-        onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"></textarea>
+      <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Tell Me More</label>
+      <textarea id="custNotes" rows="4" placeholder="Any details, inspo, or questions — the more you share the better!" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:20px;resize:vertical;font-family:'Crimson Pro',serif;min-height:80px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"></textarea>
 
       <div id="custFormMsg" style="font-size:13px;margin-bottom:12px;min-height:18px;text-align:center;"></div>
-      <button onclick="submitCustomRequest()"
+      <button onclick="submitCustomRequest(event)"
         style="width:100%;background:linear-gradient(135deg,var(--violet),var(--plum));color:var(--white);border:1px solid var(--lavender);padding:14px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;cursor:pointer;border-radius:8px;">
         ✦ Send My Request ✦
       </button>
@@ -870,7 +855,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- About -->
-<section id="about" class="page-section">
+<section id="about">
   <h2 class="section-title">About Me</h2>
   <p class="section-sub">✦ the maker behind the magic ✦</p>
   <div class="divider"></div>
@@ -889,7 +874,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- FAQ -->
-<section id="faq" class="page-section">
+<section id="faq">
   <h2 class="section-title">FAQ</h2>
   <p class="section-sub">✦ questions & answers ✦</p>
   <div class="divider"></div>
@@ -897,7 +882,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- Contact -->
-<section id="contact" class="page-section">
+<section id="contact">
   <h2 class="section-title">Get in Touch</h2>
   <p class="section-sub">✦ I'd love to hear from you ✦</p>
   <div class="divider"></div>
@@ -932,7 +917,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </section>
 
 <!-- Socials -->
-<section id="socials" class="page-section">
+<section id="socials">
   <h2 class="section-title">Find Me Online</h2>
   <p class="section-sub">✦ come say hello ✦</p>
   <div class="divider"></div>
@@ -1160,7 +1145,7 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </div>
 
 <!-- Return Policy -->
-<section id="returns" class="page-section" style="background:linear-gradient(180deg,var(--deep),var(--midnight),var(--deep));">
+<section id="returns" style="background:linear-gradient(180deg,var(--deep),var(--midnight),var(--deep));">
   <div class="section-title">Return Policy</div>
   <div class="divider"></div>
   <div style="max-width:700px;margin:0 auto;">
@@ -1188,72 +1173,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
 </footer>
 
 <script>
-// ── Custom Requests ─────────────────────────────────────────────
-function loadCustomGallery(){
-  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
-  }).then(function(r){return r.json();}).then(function(rows){
-    var grid=document.getElementById('customGallery');
-    var empty=document.getElementById('customGalleryEmpty');
-    if(!grid)return;
-    if(!rows||!rows.length){if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';return;}
-    if(empty)empty.style.display='none';
-    (rows||[]).forEach(function(req){
-      (req.photos||[]).forEach(function(photo){
-        var card=document.createElement('div');
-        card.style.cssText='border-radius:10px;overflow:hidden;aspect-ratio:1;background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);position:relative;cursor:pointer;';
-        var img=document.createElement('img');img.src=photo;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';img.alt=req.piece_type||'Custom piece';
-        var badge=document.createElement('div');badge.style.cssText='position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.65);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:10px;';
-        badge.textContent=req.piece_type||'Custom';
-        card.appendChild(img);card.appendChild(badge);grid.appendChild(card);
-      });
-    });
-  }).catch(function(){var e=document.getElementById('customGalleryEmpty');if(e)e.textContent='';});
-}
-
-function submitCustomRequest(){
-  var name=(document.getElementById('custName').value||'').trim();
-  var contact=(document.getElementById('custContact').value||'').trim();
-  var pieceType=(document.getElementById('custPieceType').value||'').trim();
-  var colors=(document.getElementById('custColors').value||'').trim();
-  var initial=(document.getElementById('custInitial').value||'').trim();
-  var notes=(document.getElementById('custNotes').value||'').trim();
-  var msg=document.getElementById('custFormMsg');
-  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
-  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
-  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
-  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
-  var btn=event.currentTarget;btn.disabled=true;btn.textContent='Sending...';
-  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
-  fetch(SUPA_URL+'/rest/v1/custom_requests',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-    body:JSON.stringify(row)
-  }).then(function(r){
-    if(r.ok||r.status===201){
-      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
-      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-      document.getElementById('custPieceType').value='';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    } else {
-      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    }
-  }).catch(function(){
-    msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
-    btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-  });
-}
-
-// ── Page Navigation ───────────────────────────────────────────── ────────────────────────────────────────────
-var currentPage = 'home';
-function showPage(id){
-  document.querySelectorAll('.page-section').forEach(function(s){s.classList.remove('active');});
-  var target=document.getElementById(id);
-  if(target){target.classList.add('active');currentPage=id;window.scrollTo(0,0);}
-  if(id==='custom-section')loadCustomGallery();
-}
-
 // ── Stars ──────────────────────────────────────────────────────
 (function(){
   var s=document.getElementById('stars');
@@ -1940,10 +1859,77 @@ function renderProducts(){
   });
 }
 
-// ── FAQ ────────────────────────────────────────────────────────
+// ── Custom Requests ───────────────────────────────────────────────
+var customGalleryLoaded=false;
+function loadCustomGallery(){
+  if(customGalleryLoaded)return;
+  var grid=document.getElementById('customGallery');
+  var empty=document.getElementById('customGalleryEmpty');
+  if(!grid)return;
+  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    customGalleryLoaded=true;
+    if(!rows||!rows.length){
+      if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    rows.forEach(function(req){
+      var photos=req.photos||[];
+      if(!photos.length)return;
+      // Only show FIRST photo per showcase entry to avoid duplicates
+      var photo=photos[0];
+      var card=document.createElement('div');
+      card.style.cssText='border-radius:10px;overflow:hidden;aspect-ratio:1;background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);position:relative;';
+      var img=document.createElement('img');img.src=photo;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+      img.alt=req.piece_type||'Custom piece';
+      var badge=document.createElement('div');
+      badge.style.cssText='position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.65);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:10px;font-family:"Cormorant Garamond",serif;letter-spacing:1px;';
+      badge.textContent=req.piece_type||'Custom';
+      card.appendChild(img);card.appendChild(badge);grid.appendChild(card);
+    });
+  }).catch(function(){if(empty)empty.textContent='';});
+}
+
+function submitCustomRequest(e){
+  var name=(document.getElementById('custName').value||'').trim();
+  var contact=(document.getElementById('custContact').value||'').trim();
+  var pieceType=(document.getElementById('custPieceType').value||'').trim();
+  var colors=(document.getElementById('custColors').value||'').trim();
+  var initial=(document.getElementById('custInitial').value||'').trim();
+  var notes=(document.getElementById('custNotes').value||'').trim();
+  var msg=document.getElementById('custFormMsg');
+  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
+  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
+  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
+  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
+  var btn=e.currentTarget;btn.disabled=true;btn.textContent='Sending...';
+  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
+  fetch(SUPA_URL+'/rest/v1/custom_requests',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(row)
+  }).then(function(r){
+    if(r.ok||r.status===201){
+      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
+      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+      document.getElementById('custPieceType').value='';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    } else {
+      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    }
+  }).catch(function(){
+    msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
+    btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+  });
+}
+
+// ── FAQ
 var faqs=[
   {q:'How long does shipping take?',a:'Most orders ship within 3–5 business days. Once shipped, delivery typically takes 3–7 days depending on your location.'},
-  {q:'Do you accept custom pieces?',a:'Yes! I love making custom pieces. Head to the Custom section to submit a request. Pricing is based on materials, time, and complexity — I\'ll reach out with a quote before anything is made.'},
+  {q:'Do you accept custom pieces?',a:'Yes! Head to the Custom section to submit a request. Pricing is based on materials, time, and complexity — I\'ll reach out with a quote before anything is made.'},
   {q:'What materials do you use?',a:'I work with resin, stainless steel, copper, wire, gemstones, crystals, and more. Each listing describes the specific materials used.'},
   {q:"What is your return policy?",a:"We accept returns within 14 days of delivery on unworn, undamaged items. Shipping costs are non-refundable and the customer covers return shipping. See our full Return Policy section for details."},
   {q:'Do you ship internationally?',a:'Currently I ship within the United States. International shipping may be available — just reach out and I\'ll see what I can do!'},
@@ -2417,9 +2403,8 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadLetterInventory(function(){loadProducts();
-showPage('home');
-loadCustomGallery();});
+loadLetterInventory(function(){loadProducts();});
+loadCustomGallery();
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
