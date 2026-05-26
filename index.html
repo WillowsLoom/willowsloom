@@ -514,12 +514,6 @@ footer{background:var(--midnight);border-top:1px solid var(--plum);padding:32px 
   content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);
   width:70%;height:1px;background:#f87171;
 }
-
-/* ── Custom section select fix ── */
-select option {
-  background: #1a0d35;
-  color: #e8e0f0;
-}
 </style>
 </head>
 <body>
@@ -567,6 +561,7 @@ select option {
   <span class="menu-close" id="menuClose">✕</span>
   <a href="#home" onclick="closeMobile()">Home</a>
   <a href="#shop" onclick="closeMobile()">Shop</a>
+  <a href="#custom-section" onclick="closeMobile()">Custom</a>
   <a href="#about" onclick="closeMobile()">About</a>
   <a href="#faq" onclick="closeMobile()">FAQ</a>
   <a href="#contact" onclick="closeMobile()">Contact</a>
@@ -789,11 +784,14 @@ select option {
   <p class="section-sub">✦ made just for you ✦</p>
   <div class="divider"></div>
 
-  <div style="max-width:900px;margin:0 auto 48px;padding:0 20px;">
-    <div id="customGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:12px;"></div>
-    <p id="customGalleryEmpty" style="text-align:center;font-size:13px;color:var(--lavender);font-style:italic;"></p>
+  <!-- BYO-style inspiration gallery -->
+  <div class="byo-inspo">
+    <div class="byo-inspo-label">✦ a few finished pieces for inspiration ✦</div>
+    <div class="byo-inspo-grid" id="customGallery"></div>
+    <p id="customGalleryEmpty" style="text-align:center;font-size:13px;color:var(--lavender);font-style:italic;margin-top:12px;"></p>
   </div>
 
+  <!-- Pricing note -->
   <div style="max-width:620px;margin:0 auto 48px;padding:24px 28px;background:rgba(45,27,78,0.4);border:1px solid rgba(201,168,76,0.25);border-radius:12px;text-align:center;">
     <div style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);margin-bottom:12px;letter-spacing:1px;">✦ How Custom Pricing Works ✦</div>
     <p style="font-size:14px;color:var(--stardust);line-height:1.8;margin-bottom:14px;">Every custom piece is one of a kind — pricing is determined after we chat about your vision. Cost is based on:</p>
@@ -808,6 +806,7 @@ select option {
     <p style="font-size:13px;color:var(--lavender);font-style:italic;">No payment required upfront — I’ll reach out with a quote before anything is made. 🤍</p>
   </div>
 
+  <!-- Request form -->
   <div style="max-width:620px;margin:0 auto;padding:0 20px;">
     <div style="background:rgba(45,27,78,0.4);border:1px solid rgba(107,63,160,0.4);border-radius:16px;padding:32px 28px;">
       <div style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:6px;text-align:center;">Request a Custom Piece</div>
@@ -821,22 +820,22 @@ select option {
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Piece Type *</label>
       <select id="custPieceType" style="width:100%;box-sizing:border-box;background:#1a0d35;border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'">
-        <option value="" style="background:#1a0d35;color:#e8e0f0;">Select a piece type...</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Necklace / Choker</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Bracelet</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Anklet</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Earrings</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Waist Beads</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Car Charm / Lanyard</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Set (multiple pieces)</option>
-        <option style="background:#1a0d35;color:#e8e0f0;">Other / Not sure</option>
+        <option value="" style="background:#1a0d35;">Select a piece type...</option>
+        <option style="background:#1a0d35;">Necklace / Choker</option>
+        <option style="background:#1a0d35;">Bracelet</option>
+        <option style="background:#1a0d35;">Anklet</option>
+        <option style="background:#1a0d35;">Earrings</option>
+        <option style="background:#1a0d35;">Waist Beads</option>
+        <option style="background:#1a0d35;">Car Charm / Lanyard</option>
+        <option style="background:#1a0d35;">Set (multiple pieces)</option>
+        <option style="background:#1a0d35;">Other / Not sure</option>
       </select>
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Colors / Style / Vibe *</label>
       <input id="custColors" type="text" placeholder="e.g. purple and gold, gothic, earthy..." style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Initial / Word (if applicable)</label>
-      <input id="custInitial" type="text" placeholder="e.g. A, COVEN, BESTIE..." style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;text-transform:uppercase;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'" oninput="this.value=this.value.toUpperCase()"/>
+      <input id="custInitial" type="text" placeholder="e.g. A, COVEN, BESTIE..." style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:16px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"/>
 
       <label style="display:block;font-size:11px;color:var(--lavender);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-family:'Cormorant Garamond',serif;">Tell Me More</label>
       <textarea id="custNotes" rows="4" placeholder="Any details, inspo, or questions — the more you share the better!" style="width:100%;box-sizing:border-box;background:rgba(45,27,78,0.3);border:1px solid var(--plum);color:var(--white);padding:11px 14px;font-size:14px;border-radius:6px;outline:none;display:block;margin-bottom:20px;resize:vertical;font-family:'Crimson Pro',serif;min-height:80px;" onfocus="this.style.borderColor='var(--lavender)'" onblur="this.style.borderColor='var(--plum)'"></textarea>
@@ -1177,7 +1176,6 @@ select option {
   }
 })();
 
-// ── Cursor ─────────────────────────────────────────────────────
 
 // ── Announcement Bar ───────────────────────────────────────────
 // To change the announcement text, edit the line below:
@@ -1727,10 +1725,10 @@ function renderProducts(){
   varProductStore={};
   selectedVarOpts={};
   var filtered=currentFilter==='All'
-    ? products.filter(function(p){return p.category!=='Live Orders'})
+    ? products.filter(function(p){return p.category!=='Live Orders'&&p.category!=='Custom Orders'})
     : products.filter(function(p){return p.category===currentFilter});
   filtered=filtered.filter(function(p){
-    if((p.category||'')==='Live Orders') return true; // live orders always show
+    if((p.category||'')==='Live Orders'||(p.category||'')==='Custom Orders') return true; // live/custom orders always show
     var dv=(p.variations||[]).filter(function(v){return v.name&&v.name.trim();});
     var qty=dv.length?dv.reduce(function(s,v){return s+(parseInt(v.qty)||0)},0):(parseInt(p.qty)||0);
     return qty>0;
@@ -1815,7 +1813,7 @@ function renderProducts(){
     var tags=p.etsyTags&&p.etsyTags.length?'<div class="product-tags">'+p.etsyTags.slice(0,3).map(function(t){return'<span class="product-tag">'+t+'</span>'}).join('')+'</div>':'';
     var imgSection=hasVars?'<div id="pimg-'+p.id+'" style="width:100%;aspect-ratio:3/4;overflow:hidden;">'+imgHtml+'</div>':imgHtml;
     // ── Custom Order card ──
-    if((p.category||'')==='Live Orders'){
+    if((p.category||'')==='Live Orders'||(p.category||'')==='Custom Orders'){
       var custNote=p.notes||'';
       var handleMatch=custNote.match(/^(@[\w.]+)/);
       var handle=handleMatch?handleMatch[1]:'';
@@ -1843,6 +1841,68 @@ function renderProducts(){
     if(p&&(p.name||'').toLowerCase().indexOf('woven')>-1&&(p.name||'').toLowerCase().indexOf('wild')>-1){
       el.appendChild(renderLetterGrid(pid));
     }
+  });
+}
+
+
+// ── Custom Requests ─────────────────────────────────────────
+var customGalleryLoaded=false;
+function loadCustomGallery(){
+  if(customGalleryLoaded)return;
+  var grid=document.getElementById('customGallery');
+  var empty=document.getElementById('customGalleryEmpty');
+  if(!grid)return;
+  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    customGalleryLoaded=true;
+    if(!rows||!rows.length){
+      if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    rows.forEach(function(req){
+      var photos=req.photos||[];if(!photos.length)return;
+      var item=document.createElement('div');
+      item.className='byo-inspo-item';
+      var img=document.createElement('img');
+      img.src=photos[0];img.alt=req.piece_type||'Custom piece';img.loading='lazy';
+      item.appendChild(img);
+      grid.appendChild(item);
+    });
+  }).catch(function(){if(empty)empty.textContent='';});
+}
+function submitCustomRequest(e){
+  var name=(document.getElementById('custName').value||'').trim();
+  var contact=(document.getElementById('custContact').value||'').trim();
+  var pieceType=(document.getElementById('custPieceType').value||'').trim();
+  var colors=(document.getElementById('custColors').value||'').trim();
+  var initial=(document.getElementById('custInitial').value||'').trim();
+  var notes=(document.getElementById('custNotes').value||'').trim();
+  var msg=document.getElementById('custFormMsg');
+  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
+  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
+  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
+  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
+  var btn=e.target||e.currentTarget;if(btn&&btn.tagName!=='BUTTON')btn=btn.closest('button');if(!btn)return;btn.disabled=true;btn.textContent='Sending...';
+  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
+  fetch(SUPA_URL+'/rest/v1/custom_requests',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(row)
+  }).then(function(r){
+    if(r.ok||r.status===201){
+      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
+      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(i){var el=document.getElementById(i);if(el)el.value='';});
+      document.getElementById('custPieceType').value='';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    } else {
+      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
+      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
+    }
+  }).catch(function(){
+    msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
+    btn.textContent='✦ Send My Request ✦';btn.disabled=false;
   });
 }
 
@@ -2323,7 +2383,7 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadLetterInventory(function(){loadProducts();setTimeout(function(){if(typeof loadCustomGallery==='function')loadCustomGallery();},100);});
+loadLetterInventory(function(){loadProducts();setTimeout(function(){if(typeof loadCustomGallery==='function')loadCustomGallery();},200);});
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
@@ -2565,58 +2625,3 @@ function addByoToCart(){
 </div>
 </body>
 </html>
-// ── Custom Requests ─────────────────────────────────────────
-var customGalleryLoaded=false;
-function loadCustomGallery(){
-
-  if(customGalleryLoaded)return;
-  var grid=document.getElementById('customGallery');
-  var empty=document.getElementById('customGalleryEmpty');
-  if(!grid)return;
-  fetch(SUPA_URL+'/rest/v1/custom_requests?select=id,piece_type,photos&status=eq.showcase&order=created_at.desc',{
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
-  }).then(function(r){return r.json();}).then(function(rows){
-    customGalleryLoaded=true;
-    if(!rows||!rows.length){if(empty)empty.textContent='Custom pieces coming soon ✦ Check back!';return;}
-    if(empty)empty.style.display='none';
-    rows.forEach(function(req){
-      var photos=req.photos||[];if(!photos.length)return;
-      var card=document.createElement('div');card.style.cssText='border-radius:10px;overflow:hidden;aspect-ratio:1;background:rgba(45,27,78,0.3);border:1px solid rgba(107,63,160,0.3);position:relative;';
-      var img=document.createElement('img');img.src=photos[0];img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';img.alt=req.piece_type||'Custom piece';
-      var badge=document.createElement('div');badge.style.cssText='position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.65);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:10px;font-family:"Cormorant Garamond",serif;letter-spacing:1px;';
-      badge.textContent=req.piece_type||'Custom';
-      card.appendChild(img);card.appendChild(badge);grid.appendChild(card);
-    });
-  }).catch(function(){if(empty)empty.textContent='';});
-}
-function submitCustomRequest(e){
-  var name=(document.getElementById('custName').value||'').trim();
-  var contact=(document.getElementById('custContact').value||'').trim();
-  var pieceType=(document.getElementById('custPieceType').value||'').trim();
-  var colors=(document.getElementById('custColors').value||'').trim();
-  var initial=(document.getElementById('custInitial').value||'').trim();
-  var notes=(document.getElementById('custNotes').value||'').trim();
-  var msg=document.getElementById('custFormMsg');
-  if(!name){msg.style.color='#f87171';msg.textContent='Please enter your name.';return;}
-  if(!contact){msg.style.color='#f87171';msg.textContent='Please enter your email or TikTok handle.';return;}
-  if(!pieceType){msg.style.color='#f87171';msg.textContent='Please select a piece type.';return;}
-  if(!colors){msg.style.color='#f87171';msg.textContent='Please describe your colors / vibe.';return;}
-  var btn=e.currentTarget;btn.disabled=true;btn.textContent='Sending...';
-  var row={id:'cr'+Date.now(),name:name,contact:contact,piece_type:pieceType,colors:colors,initial:initial,notes:notes,status:'new',photos:[],created_at:new Date().toISOString()};
-  fetch(SUPA_URL+'/rest/v1/custom_requests',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-    body:JSON.stringify(row)
-  }).then(function(r){
-    if(r.ok||r.status===201){
-      msg.style.color='#4ade80';msg.textContent='✓ Request sent! I’ll be in touch within 1-2 days ✨';
-      ['custName','custContact','custColors','custInitial','custNotes'].forEach(function(i){var el=document.getElementById(i);if(el)el.value='';});
-      document.getElementById('custPieceType').value='';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    } else {
-      msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';
-      btn.textContent='✦ Send My Request ✦';btn.disabled=false;
-    }
-  }).catch(function(){msg.style.color='#f87171';msg.textContent='Something went wrong. DM me on TikTok instead!';btn.textContent='✦ Send My Request ✦';btn.disabled=false;});
-}
-
