@@ -2405,7 +2405,27 @@ document.addEventListener('click',function(e){
 });
 
 // Load products & render cart
-loadLetterInventory(function(){loadProducts();setTimeout(function(){if(typeof loadCustomGallery==='function')loadCustomGallery();},200);});
+// ── BYO Prices — load from Supabase and patch data-price attrs ──
+function loadByoPrices(cb){
+  fetch(SUPA_URL+'/rest/v1/byo_pricing?select=type,price,active&active=eq.true',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  }).then(function(r){return r.json();}).then(function(rows){
+    (rows||[]).forEach(function(row){
+      var card=document.querySelector('.byo-piece[data-type="'+row.type+'"]');
+      if(!card)return;
+      // Update the data-price attribute used when selecting
+      card.setAttribute('data-price', row.price);
+      // Update the visible price text
+      var priceEl=card.querySelector('.bp-price');
+      if(priceEl)priceEl.textContent='$'+parseFloat(row.price).toFixed(0);
+    });
+    if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
+
+loadByoPrices(function(){
+  loadLetterInventory(function(){loadProducts();setTimeout(function(){if(typeof loadCustomGallery==='function')loadCustomGallery();},200);});
+});
 renderCart();
 
 function chr34(){return String.fromCharCode(34);}
