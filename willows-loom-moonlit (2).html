@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Willow's Loom — Moonlit Jewelry</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --midnight:#0a0512;--navy:#170f28;--deep-blue:#2a1a3d;--ocean:#3d2350;
+  --moon-silver:#fff6e8;--moon-glow:#f3d9a8;
+  --gold:#d4af6a;--rose-gold:#e39c7c;--amethyst:#a374c9;
+  --pearl:#fdf6ec;
+  --surface:rgba(255,255,255,0.07);--surface2:rgba(255,255,255,0.13);
+  --border:rgba(228,196,150,0.25);
+  --text:#f5ecdd;--text-dim:rgba(245,236,221,0.64);
+}
+body{font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;color:var(--text);padding-bottom:60px;background:var(--midnight);}
+
+.bg-fixed{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#0a0512 0%,#170f28 16%,#2a1a3d 32%,#3d2350 50%,#55295c 70%,#7a3d5c 100%);}
+.bg-fixed svg{position:absolute;inset:0;width:100%;height:100%;}
+#moon-halo{animation:haloGlow 6s ease-in-out infinite;transform-origin:0 0;}
+@keyframes haloGlow{0%,100%{opacity:0.16;}50%{opacity:0.3;}}
+#moon-reflection-shimmer{animation:reflectionShimmer 3.2s ease-in-out infinite;transform-origin:0 0;}
+@keyframes reflectionShimmer{0%,100%{opacity:0.7;transform:scaleX(1);}50%{opacity:0.4;transform:scaleX(1.12);}}
+
+.star{position:fixed;border-radius:50%;background:#fff;pointer-events:none;z-index:1;animation:twinkle ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.15;}50%{opacity:1;}}
+
+.shooting-star{position:fixed;pointer-events:none;z-index:1;width:70px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(255,255,255,0));
+  box-shadow:0 0 8px 1px rgba(200,225,255,0.7);transform-origin:left center;}
+
+/* FLOATING SPARKLES */
+.sparkle{position:fixed;pointer-events:none;z-index:9999;
+  background:radial-gradient(circle,#fff 0%,var(--spark-color,#f3d9a8) 45%,transparent 75%);
+  clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);
+  filter:drop-shadow(0 0 4px var(--spark-color,#f3d9a8));}
+
+/* GEM/PEARL BURST PARTICLES */
+.gem-particle{position:fixed;pointer-events:none;z-index:9999;font-size:19px;}
+
+/* DRIFTING CLOUDS */
+.drift-cloud{position:fixed;pointer-events:none;z-index:2;display:flex;align-items:center;gap:10px;}
+.cloud-shape{position:relative;width:64px;height:24px;background:rgba(245,230,200,0.14);border-radius:50px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.25));}
+.cloud-shape::before{content:'';position:absolute;width:34px;height:34px;background:rgba(245,230,200,0.14);border-radius:50%;top:-17px;left:8px;}
+.cloud-shape::after{content:'';position:absolute;width:26px;height:26px;background:rgba(245,230,200,0.14);border-radius:50%;top:-13px;left:32px;}
+.mermaid{position:fixed;pointer-events:none;z-index:1;}
+.wind-swirl{width:18px;height:18px;border-radius:50%;opacity:0.5;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(243,217,168,0.85) 35%,transparent 65%);
+  -webkit-mask:radial-gradient(circle,transparent 40%,#000 41%,#000 100%);
+  mask:radial-gradient(circle,transparent 40%,#000 41%,#000 100%);
+  animation:swirlSpin 2.5s linear infinite;}
+@keyframes swirlSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes gemFloat{0%{transform:translateY(0) scale(1);opacity:0.9;}100%{transform:translateY(-110px) scale(1.3);opacity:0;}}
+
+.wrap{max-width:480px;margin:0 auto;padding:80px 18px 80px;position:relative;z-index:2;}
+
+/* PROFILE */
+.profile{text-align:center;margin-bottom:36px;}
+.profile-img{width:140px;height:140px;border-radius:50%;border:4px solid rgba(200,222,255,0.35);
+  background:linear-gradient(135deg,var(--deep-blue),var(--amethyst));
+  box-shadow:0 0 40px rgba(212,175,106,0.3),0 0 80px rgba(163,116,201,0.25);
+  margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
+.profile-img-mono{font-family:'Cinzel',serif;font-size:44px;font-weight:600;color:var(--pearl);letter-spacing:1px;}
+.profile-name{font-family:'Cinzel',serif;font-weight:600;font-size:32px;color:#fff;
+  text-shadow:0 2px 24px rgba(212,175,106,0.45),0 0 50px rgba(163,116,201,0.3);margin-bottom:8px;letter-spacing:1px;}
+.profile-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--text-dim);margin-bottom:6px;}
+.profile-handle{font-family:'Inter',sans-serif;font-size:14px;color:var(--gold);letter-spacing:0.5px;}
+
+/* DECO */
+.deco{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.deco-line{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(200,222,255,0.28),transparent);}
+.deco-gem{width:8px;height:8px;background:linear-gradient(135deg,var(--gold),var(--amethyst));transform:rotate(45deg);box-shadow:0 0 10px rgba(212,175,106,0.5);flex-shrink:0;}
+
+/* SECTION TITLE */
+.stitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--moon-glow);margin-bottom:14px;display:flex;align-items:center;gap:10px;text-shadow:0 0 12px rgba(212,175,106,0.35);}
+.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,175,106,0.35),transparent);}
+
+/* SOCIAL BUTTONS */
+.socials-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.social-btn{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:16px;border:2px solid var(--border);background:var(--surface);color:#fff;text-decoration:none;font-size:15px;font-weight:500;backdrop-filter:blur(10px);transition:all 0.2s;cursor:pointer;}
+.social-btn:hover{background:var(--surface2);border-color:var(--gold);transform:translateY(-2px);}
+.social-icon{font-size:20px;flex-shrink:0;}
+.social-label{font-family:'Cormorant Garamond',serif;font-size:15px;line-height:1.2;}
+.social-sub{font-size:11px;color:var(--text-dim);font-family:'Inter',sans-serif;font-weight:400;}
+
+.about-text{font-size:14px;line-height:1.8;color:#fff;background:rgba(4,10,22,0.35);border:2px solid rgba(200,222,255,0.14);border-radius:18px;padding:18px 20px;margin-bottom:20px;font-family:'Cormorant Garamond',serif;}
+
+.btn-shop{display:block;width:100%;padding:16px 30px;border-radius:999px;border:none;
+  background:linear-gradient(135deg,var(--gold),var(--rose-gold));color:#2a1509;
+  font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;
+  text-align:center;text-decoration:none;box-shadow:0 4px 20px rgba(212,175,106,0.35);transition:all 0.2s;}
+.btn-shop:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(212,175,106,0.5);}
+</style>
+</head>
+<body onclick="gemClick(event)">
+
+<div class="bg-fixed">
+  <svg viewBox="0 0 700 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="moongrad" cx="42%" cy="38%" r="60%">
+        <stop offset="0%" stop-color="#fff9ec"/>
+        <stop offset="45%" stop-color="#f5dfae"/>
+        <stop offset="100%" stop-color="#c99a4e"/>
+      </radialGradient>
+      <linearGradient id="oceangrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7a3d5c"/>
+        <stop offset="12%" stop-color="#55295c"/>
+        <stop offset="50%" stop-color="#2a1a3d"/>
+        <stop offset="100%" stop-color="#0a0512"/>
+      </linearGradient>
+      <filter id="halo-blur" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="14"/>
+      </filter>
+    </defs>
+
+    <!-- MOON (fixed position, upper-right of the sky, clear of the profile card) -->
+    <g id="moon-assembly" transform="translate(540,95)">
+      <circle id="moon-halo" cx="0" cy="0" r="105" fill="#f3d9a8" opacity="0.22" filter="url(#halo-blur)"/>
+      <circle cx="0" cy="0" r="100" fill="none" stroke="#f3d9a8" stroke-width="1.5" opacity="0.14"/>
+      <circle cx="0" cy="0" r="120" fill="none" stroke="#fff6e8" stroke-width="1" opacity="0.1"/>
+      <circle cx="0" cy="0" r="90" fill="#a374c9" opacity="0.1"/>
+      <circle cx="0" cy="0" r="70" fill="#f3d9a8" opacity="0.14"/>
+      <circle cx="0" cy="0" r="52" fill="url(#moongrad)"/>
+      <circle cx="-14" cy="-10" r="8" fill="#d9b877" opacity="0.35"/>
+      <circle cx="16" cy="6" r="5" fill="#d9b877" opacity="0.3"/>
+      <circle cx="4" cy="22" r="10" fill="#d9b877" opacity="0.25"/>
+      <circle cx="-18" cy="16" r="4" fill="#d9b877" opacity="0.3"/>
+    </g>
+
+    <!-- STATIC STARS (fixed in sky, not tied to moon svg) -->
+    <g fill="#fff6e8">
+      <circle cx="60" cy="60" r="1.4" opacity="0.7"/>
+      <circle cx="130" cy="110" r="1" opacity="0.5"/>
+      <circle cx="220" cy="50" r="1.6" opacity="0.8"/>
+      <circle cx="560" cy="70" r="1.3" opacity="0.6"/>
+      <circle cx="620" cy="140" r="1" opacity="0.5"/>
+      <circle cx="480" cy="40" r="1.5" opacity="0.7"/>
+      <circle cx="90" cy="180" r="1" opacity="0.45"/>
+      <circle cx="650" cy="220" r="1.2" opacity="0.55"/>
+      <circle cx="30" cy="230" r="1.3" opacity="0.6"/>
+      <circle cx="380" cy="30" r="1" opacity="0.5"/>
+    </g>
+
+    <!-- OCEAN -->
+    <rect x="0" y="340" width="700" height="160" fill="url(#oceangrad)"/>
+    <g id="moon-reflection-group" transform="translate(540,340)">
+      <g id="moon-reflection-shimmer">
+        <polygon points="-42,0 42,0 8,150 -8,150" fill="#f3d9a8" opacity="0.3"/>
+        <polygon points="-24,0 24,0 5,150 -5,150" fill="#fff6e8" opacity="0.22"/>
+      </g>
+    </g>
+    <g stroke="#f3d9a8" stroke-width="1" opacity="0.16" fill="none" stroke-linecap="round">
+      <path d="M0,356 Q40,350 80,356 T160,356 T240,356 T320,356 T400,356 T480,356 T560,356 T640,356 T720,356"/>
+      <path d="M0,374 Q40,367 80,374 T160,374 T240,374 T320,374 T400,374 T480,374 T560,374 T640,374 T720,374"/>
+      <path d="M0,394 Q40,386 80,394 T160,394 T240,394 T320,394 T400,394 T480,394 T560,394 T640,394 T720,394"/>
+      <path d="M0,418 Q40,409 80,418 T160,418 T240,418 T320,418 T400,418 T480,418 T560,418 T640,418 T720,418"/>
+      <path d="M0,446 Q40,436 80,446 T160,446 T240,446 T320,446 T400,446 T480,446 T560,446 T640,446 T720,446"/>
+    </g>
+  </svg>
+</div>
+
+<div class="wrap">
+  <div class="profile">
+    <div class="profile-img"><div class="profile-img-mono">WL</div></div>
+    <div class="profile-name">Willow's Loom</div>
+    <div class="profile-tagline">handmade jewelry, cast under moonlight</div>
+    <div class="profile-handle">@willowsloomjewelry</div>
+  </div>
+
+  <div class="about-text">
+    Every piece is wire-wrapped and cast by hand, one quiet tide at a time — moonstone, pearl, and sea glass set for the dreamers and the night swimmers. 🌙🫧
+  </div>
+
+  <div class="deco"><div class="deco-line"></div><div class="deco-gem"></div><div class="deco-line"></div></div>
+
+  <a class="btn-shop" href="#" target="_blank">✦ Shop the Collection ✦</a>
+</div>
+
+<script>
+// ============================================================
+// STATIC TWINKLING STARFIELD
+// ============================================================
+function spawnStarfield(){
+  const count=45;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=1+Math.random()*2;
+    const top=Math.random()*62; // keep stars above the ocean band
+    const left=Math.random()*100;
+    const dur=2+Math.random()*3;
+    const delay=Math.random()*4;
+    s.style.cssText=`width:${size}px;height:${size}px;top:${top}vh;left:${left}vw;animation-duration:${dur}s;animation-delay:${delay}s;`;
+    document.body.appendChild(s);
+  }
+}
+spawnStarfield();
+
+// ============================================================
+// FLOATING SPARKLES (moonlight motes rising)
+// ============================================================
+function spawnSparkle(){
+  const s=document.createElement('div');
+  s.className='sparkle';
+  const colors=['#fff6e8','#f3d9a8','#e39c7c','#a374c9'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const left=Math.random()*95;
+  const dur=6+Math.random()*4;
+  const rot=(Math.random()-0.5)*40;
+  const size=7+Math.random()*9;
+  s.style.cssText=`--spark-color:${color};left:${left}%;bottom:-40px;width:${size}px;height:${size}px;position:fixed;pointer-events:none;z-index:9999;opacity:0;`;
+  document.body.appendChild(s);
+  const start=performance.now();
+  function frame(now){
+    const t=(now-start)/(dur*1000);
+    if(t>=1){s.remove();return;}
+    const y=t*110;
+    const op=t<0.1?t*9:t>0.85?(1-t)*6.67:0.85;
+    const r=rot+t*20;
+    s.style.transform=`translateY(-${y}vh) rotate(${r}deg)`;
+    s.style.opacity=op;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+setInterval(spawnSparkle,800);
+spawnSparkle();spawnSparkle();spawnSparkle();
+
+// ============================================================
+// DRIFTING CLOUDS WITH WIND SWIRLS (occasional, ambient)
+// ============================================================
+function spawnCloud(){
+  const c=document.createElement('div');
+  c.className='drift-cloud';
+  c.innerHTML='<div class="wind-swirl"></div><div class="cloud-shape"></div>';
+  const top=6+Math.random()*22;
+  const dur=28+Math.random()*18;
+  const scale=0.7+Math.random()*0.8;
+  const dir=Math.random()<0.5?1:-1;
+  c.style.top=top+'vh';
+  c.style.opacity='0';
+  if(dir>0){c.style.left='-80px';} else {c.style.right='-80px';c.style.flexDirection='row-reverse';}
+  document.body.appendChild(c);
+  const start=performance.now();
+  function frame(now){
+    const t=(now-start)/(dur*1000);
+    if(t>=1){c.remove();return;}
+    const x=t*(window.innerWidth+160)*dir;
+    const op=t<0.08?t*11:t>0.9?(1-t)*10:0.4;
+    c.style.transform=`translateX(${x}px) scale(${scale})`;
+    c.style.opacity=op;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function scheduleCloud(){
+  const delay=18000+Math.random()*27000;
+  setTimeout(()=>{spawnCloud();scheduleCloud();},delay);
+}
+scheduleCloud();
+
+// ============================================================
+// LEAPING MERMAIDS (occasional, breach the water and dive back in)
+// ============================================================
+function spawnMermaid(){
+  const m=document.createElement('div');
+  m.className='mermaid';
+  const left=8+Math.random()*84;
+  const bottom=6+Math.random()*14;
+  const size=26+Math.random()*16;
+  const jumpHeight=30+Math.random()*26;
+  const dur=1.3+Math.random()*0.6;
+  const flip=Math.random()<0.5?-1:1;
+  const tailColor=['#a374c9','#e39c7c','#d4af6a','#c98bd9'][Math.floor(Math.random()*4)];
+  const skinTone=['#f2e2c8','#e8c9a8','#d9a978'][Math.floor(Math.random()*3)];
+  const hairColor=['#fff6e8','#f3d9a8','#e8d5f0'][Math.floor(Math.random()*3)];
+  m.style.cssText=`left:${left}%;bottom:${bottom}vh;width:${size}px;height:${size*0.74}px;opacity:0;`;
+  m.innerHTML=`<svg viewBox="0 0 46 34" width="100%" height="100%" style="transform:scaleX(${flip});overflow:visible;">
+    <path d="M0,17 C5,4 17,4 21,17 C17,30 5,30 0,17 Z" fill="${tailColor}"/>
+    <path d="M18,17 C22,8 30,8 34,13 C30,15 30,19 34,21 C30,26 22,26 18,17 Z" fill="${tailColor}" opacity="0.85"/>
+    <path d="M38,10 Q29,2 15,7 Q26,9 30,14" fill="none" stroke="${hairColor}" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M35,15 Q31,17.5 27,15" fill="none" stroke="${skinTone}" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="38" cy="14" r="4.2" fill="${skinTone}"/>
+    <circle cx="39.3" cy="13.1" r="0.6" fill="#2a1730"/>
+  </svg>`;
+  document.body.appendChild(m);
+  const start=performance.now();
+  function frame(now){
+    const t=(now-start)/(dur*1000);
+    if(t>=1){m.remove();return;}
+    const arc=4*t*(1-t);
+    const y=arc*jumpHeight;
+    const rot=(t-0.5)*-60*flip;
+    const op=t<0.12?t*8.3:t>0.85?(1-t)*6.67:1;
+    m.style.transform=`translateY(-${y}px) rotate(${rot}deg)`;
+    m.style.opacity=op;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function scheduleMermaid(){
+  const delay=9000+Math.random()*22000;
+  setTimeout(()=>{spawnMermaid();scheduleMermaid();},delay);
+}
+scheduleMermaid();
+
+// ============================================================
+// SHOOTING STARS DRIFTING ACROSS THE SKY (occasional)
+// ============================================================
+function spawnShootingStar(){
+  const s=document.createElement('div');
+  s.className='shooting-star';
+  const topStart=4+Math.random()*18;
+  const leftStart=Math.random()*65;
+  const angle=18+Math.random()*14;
+  const dist=32+Math.random()*22;
+  const dur=1+Math.random()*0.5;
+  s.style.cssText=`top:${topStart}vh;left:${leftStart}vw;opacity:0;`;
+  document.body.appendChild(s);
+  const start=performance.now();
+  function frame(now){
+    const t=(now-start)/(dur*1000);
+    if(t>=1){s.remove();return;}
+    const travel=t*dist;
+    const dx=travel*Math.cos(angle*Math.PI/180);
+    const dy=travel*Math.sin(angle*Math.PI/180);
+    const op=t<0.15?t*6.6:t>0.8?(1-t)*5:1;
+    s.style.transform=`translate(${dx}vw,${dy}vh) rotate(${angle}deg)`;
+    s.style.opacity=op;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function scheduleShootingStar(){
+  const delay=14000+Math.random()*28000;
+  setTimeout(()=>{spawnShootingStar();scheduleShootingStar();},delay);
+}
+scheduleShootingStar();
+
+// ============================================================
+// GEM BURST ON CLICK
+// ============================================================
+function gemClick(e){
+  spawnGems(e.clientX||window.innerWidth/2, e.clientY||window.innerHeight/2);
+}
+function spawnGems(x,y){
+  const gems=['💎','✨','🫧','🔮'];
+  for(let i=0;i<6;i++){
+    const el=document.createElement('div');
+    el.className='gem-particle';
+    el.textContent=gems[Math.floor(Math.random()*gems.length)];
+    el.style.left=(x+(-50+Math.random()*100))+'px';
+    el.style.top=(y+(-20+Math.random()*30))+'px';
+    el.style.animation=`gemFloat ${0.6+Math.random()*0.5}s ease-out forwards`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1200);
+  }
+}
+</script>
+</body>
+</html>
